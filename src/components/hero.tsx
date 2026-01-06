@@ -25,7 +25,7 @@ const Hero: React.FC = () => {
       {/* CONTENT */}
       <div className="relative z-10 flex h-full items-center px-6 py-24 sm:px-10 sm:py-32 lg:px-16 lg:py-36">
         <div className="max-w-2xl">
-          <h1 className="font-serif uppercase tracking-[0.04em] text-[48px] leading-[0.95] text-[#EDE6D8] sm:text-[60px] lg:text-[72px]">
+          <h1 className="font-serif uppercase tracking-[0.04em] text-[44px] leading-[0.95] text-[#EDE6D8] sm:text-[56px] lg:text-[66px]">
             Частный
           <br />
            юрист
@@ -41,7 +41,7 @@ const Hero: React.FC = () => {
           <div className="mt-5">
             <a
               href="#contact"
-              className="inline-flex items-center justify-center rounded-full bg-[#8B1E2D] px-8 py-3.5 text-sm font-medium text-white shadow-[0_18px_52px_rgba(139,30,45,0.4)] transition hover:bg-[#A32537]"
+              className="inline-flex items-center justify-center rounded-xl bg-[#8B1E2D] px-6 py-3 text-sm font-medium text-white ring-1 ring-white/10 shadow-[0_10px_28px_rgba(0,0,0,0.38)] transition duration-200 hover:bg-[#7A1A27] hover:shadow-[0_12px_32px_rgba(0,0,0,0.45)]"
             >
               Запросить разбор
             </a>

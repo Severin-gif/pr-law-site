@@ -1,122 +1,97 @@
 import React from "react";
 
-type Service = {
+type ServiceCard = {
   title: string;
-  lead: string;
   bullets: string[];
-  outcome: string;
-  primary?: boolean;
+  result: string;
 };
 
-const SERVICES: Service[] = [
+const cards: ServiceCard[] = [
   {
-    title: "Арбитраж / Банкротство",
-    lead: "",
+    title: "Арбитраж / банкротство",
     bullets: [
-      "судебное взыскание задолженности и убытков",
-      "споры по договорам: поставка, подряд, услуги",
-      "обеспечительные меры и давление через процесс",
-      "субсидиарная ответственность и оспаривание сделок",
+      "долг / убытки / неисполнение",
+      "давление со стороны контрагента",
+      "аресты / блокировки / риски потери",
     ],
-    outcome: "Собранная позиция и управляемый сценарий вместо “хаотичного участия”",
-    primary: true,
+    result: "Управляемый сценарий вместо хаоса.",
   },
   {
     title: "Корпоративные конфликты",
-    lead: "",
     bullets: [
-      "споры между собственниками / участниками",
-      "выходы, блокировки, перераспределение долей",
-      "документы: собрания, сделки, полномочия, директоры",
-      "обеспечительные меры, ограничения, фиксация условий",
+      "конфликт собственников / директора",
+      "блокировки решений и денег",
+      "выход участника / перераспределение долей",
     ],
-    outcome:
-      "Фиксация контроля и условий: договорённость или решение через суд.",
+    result: "Контроль и фиксация условий.",
   },
   {
     title: "Защита активов и рисков",
-    lead: "",
     bullets: [
-      "структура владения и контуры ответственности",
-      "коммерческая тайна и интеллектуальная собственность",
-      "работа с рисками контрагентов заранее",
-      "ограничения, залоги, поручительства: что включать",
+      "активы под угрозой",
+      "риск требований / проверок",
+      "контрагенты и условия сделки",
     ],
-    outcome: "Понимание рисков и план до того, как станет поздно.",
+    result: "План до того, как стало поздно.",
   },
 ];
 
 const ServicesSection: React.FC = () => {
   return (
-    <section id="services" className="mt-20">
-      <div className="overflow-hidden rounded-[32px] border border-white/10 bg-[#0B0D10] shadow-[0_32px_80px_rgba(0,0,0,0.65)]">
-        {/* Header */}
-        <div className="px-8 pt-12 pb-8 md:px-14">
-          <h2 className="text-4xl md:text-6xl font-serif text-white tracking-tight leading-[1.02]">
+    <section
+      id="services"
+      className="px-6 py-14 sm:px-10 sm:py-16 lg:px-16 lg:py-20"
+    >
+      <div className="mx-auto max-w-6xl">
+        <div className="rounded-[28px] border border-white/10 bg-white/[0.02] p-8 sm:p-10">
+          <h2 className="font-serif text-[34px] leading-tight tracking-tight text-white sm:text-[40px]">
             Юридическая защита бизнеса.
           </h2>
 
-          <p className="mt-4 max-w-3xl text-base md:text-[17px] text-slate-300/90 leading-relaxed">
-            Договоры, регламенты, сделки, представительство в суде — но фокус не на формальностях, а на последствиях,
-            рисках и результате.
+          <p className="mt-4 max-w-3xl text-sm leading-relaxed text-white/70 sm:text-base">
+            Договоры, споры, риски — фокус на последствиях и контроле.
           </p>
-        </div>
 
-        {/* Cards */}
-        <div className="px-8 pb-12 md:px-14">
-          <div className="grid gap-6 md:grid-cols-3">
-            {SERVICES.map((s) => (
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
+            {cards.map((c) => (
               <article
-                key={s.title}
-                className={[
-                  "relative rounded-3xl border border-white/10 bg-white/[0.035] backdrop-blur-sm",
-                  "shadow-[0_18px_50px_rgba(0,0,0,0.50)]",
-                  "p-7 md:p-8",
-                  "flex h-full flex-col",
-                  s.primary ? "ring-1 ring-inset ring-white/20" : "",
-                ].join(" ")}
+                key={c.title}
+                className="group relative flex min-h-[360px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-black/20 p-6 backdrop-blur-md transition hover:border-white/15"
               >
-                {/* soft highlight */}
-                <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/6 blur-3xl" />
-
-                {/* Top */}
-                <div className="relative">
-                  <h3 className="text-2xl md:text-[28px] font-serif text-white tracking-tight leading-tight">
-                    {s.title}
-                  </h3>
-                  <p className="mt-2 text-sm md:text-[14px] text-slate-300/70 leading-relaxed">
-                    {s.lead}
-                  </p>
+                {/* subtle hover sheen */}
+                <div className="pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/[0.06] via-transparent to-transparent" />
                 </div>
 
-                {/* Bullets */}
-                <ul className="relative mt-6 space-y-3.5 text-[15px] leading-relaxed text-slate-200/90">
-                  {s.bullets.map((b, idx) => (
-                    <li key={idx} className="flex gap-3">
-                      <span className="mt-[10px] h-[4px] w-[4px] rounded-full bg-slate-200/60 shrink-0" />
+                <h3 className="relative min-h-[56px] font-serif text-xl leading-snug text-white">
+                  {c.title}
+                </h3>
+
+                <ul className="relative mt-5 min-h-[132px] space-y-3 text-sm text-white/70">
+                  {c.bullets.map((b) => (
+                    <li key={b} className="flex gap-3">
+                      <span className="mt-[8px] h-[3px] w-[3px] shrink-0 rounded-full bg-white/35" />
                       <span>{b}</span>
                     </li>
                   ))}
                 </ul>
 
-                {/* Bottom (pins to bottom for equal alignment) */}
-                <div className="relative mt-7 pt-7 border-t border-white/10">
-                  <div className="rounded-2xl bg-black/28 border border-white/10 px-5 py-5">
-                    <div className="text-[10px] tracking-[0.26em] uppercase text-slate-300/55">
-                      результат
-                    </div>
-                    <p className="mt-2 text-[15px] text-white/92 leading-relaxed">
-                      {s.outcome}
-                    </p>
+                {/* RESULT pinned to bottom */}
+                <div className="relative mt-auto rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                  <div className="text-[10px] tracking-[0.18em] text-white/45">
+                    РЕЗУЛЬТАТ
+                  </div>
+                  <div className="mt-2 text-sm leading-relaxed text-white/85">
+                    {c.result}
                   </div>
                 </div>
               </article>
             ))}
           </div>
 
-          <div className="mt-10 text-xs md:text-[13px] text-slate-400/70">
+          <p className="mt-8 text-xs text-white/40">
             Формат работы и условия — после анализа ситуации и документов.
-          </div>
+          </p>
         </div>
       </div>
     </section>
