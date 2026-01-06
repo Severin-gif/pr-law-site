@@ -1,44 +1,39 @@
 import React from "react";
-import Header from "./components/header";
-import Hero from "./components/hero";
 
-import QuoteSection from "./components/QuoteSection";
+import Header from "./components/header";
+import Footer from "./components/Footer";
+
+import Hero from "./components/hero";
 import AboutSection from "./components/AboutSection";
 import ServicesSection from "./components/ServicesSection";
-import AudienceSection from "./components/AudienceSection";
-import AboutSpeakerSection from "./components/AboutSpeakerSection";
-import ProcessSection from "./components/ProcessSection";
-import PersonalFormatSection from "./components/PersonalFormatSection";
-import ResultsSection from "./components/ResultsSection";
-import FAQSection from "./components/FAQSection";
-
 import InterludeSection from "./components/InterludeSection";
+import TrustSection from "./components/TrustSection";
+
+import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
-import Footer from "./components/Footer";
 
 const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#0B0D10] text-[#EDEAE2]">
       <Header />
 
-      <main className="mx-auto max-w-6xl px-4 pb-16">
-        <Hero />
-        <QuoteSection />
+      <main className="px-6 pb-16 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-6xl space-y-12 sm:space-y-16 lg:space-y-20">
+          <Hero />
 
-        <AboutSection />
-        <ServicesSection />
+          {/* смысловой блок — коротко, без “умничания” */}
+          <AboutSection />
 
-        {/* визуальная пауза/фото-блок */}
-        <InterludeSection />
+          <ServicesSection />
+          <InterludeSection />
 
-        <AudienceSection />
-        <AboutSpeakerSection />
-        <ProcessSection />
-        <PersonalFormatSection />
-        <ResultsSection />
-        <FAQSection />
+          <TrustSection />
 
-        <ContactSection />
+          {/* короткий FAQ (3–4 вопроса) */}
+          <FAQSection />
+
+          <ContactSection />
+        </div>
       </main>
 
       <Footer />
