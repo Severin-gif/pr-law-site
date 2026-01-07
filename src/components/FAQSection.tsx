@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 
-type QA = {
-  q: string;
-  a: string;
-};
+type QA = { q: string; a: string };
 
 const items: QA[] = [
   {
@@ -16,11 +13,11 @@ const items: QA[] = [
   },
   {
     q: "Какие сроки?",
-    a: "Сроки зависят от задачи и количества документов. Срочные ситуации беру в приоритет, но подтверждаю срок сразу — без обещаний “сделаю завтра”, если это нереалистично.",
+    a: "Сроки зависят от задачи и количества документов. Срочные ситуации беру в приоритет, но срок подтверждаю сразу.",
   },
   {
     q: "Вы работаете лично?",
-    a: "Да. Я веду работу сам, без передачи дела “внутрь команды”.",
+    a: "Да. Я веду работу сам, без передачи дела младшим специалистам.",
   },
 ];
 
@@ -30,75 +27,63 @@ export default function FAQSection() {
   return (
     <section
       id="faq"
-      className="relative overflow-hidden rounded-[28px] border border-white/10"
+      className="relative overflow-hidden rounded-[28px]"
       style={{
         backgroundImage: "url(/biblio.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/90" />
-      <div className="absolute inset-0 bg-black/30" />
+      {/* общий фон: мягко, но с читабельностью */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/65 via-black/45 to-black/70" />
+      <div className="absolute inset-0 bg-black/15" />
 
-      {/* content */}
-      <div className="relative z-10 p-8 sm:p-10 lg:p-12">
-        <div className="mx-auto max-w-3xl rounded-2xl border border-white/10 bg-black/60 p-8 backdrop-blur-sm sm:p-10">
-          <h2 className="font-serif text-[30px] leading-tight tracking-tight text-white sm:text-[36px]">
-            Вопросы
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-white/65 sm:text-base">
-            Коротко. По делу.
-          </p>
+      <div className="relative z-10 mx-auto max-w-5xl px-8 py-16 sm:px-12 sm:py-20">
+        <h2 className="font-serif text-[32px] leading-tight text-[#F2EFEA] sm:text-[40px]">
+          Вопросы
+        </h2>
+        <p className="mt-3 text-sm text-[#CFCAC2] sm:text-base">
+          Коротко. По делу.
+        </p>
 
-          <div className="mt-8 space-y-3">
+        {/* локальная подложка под текстом — БЕЗ рамок */}
+        <div className="mt-10 max-w-3xl rounded-2xl bg-black/35 px-6 py-8 backdrop-blur-[2px] sm:px-8 sm:py-10">
+          <div className="space-y-6">
             {items.map((it, idx) => {
               const isOpen = openIndex === idx;
 
               return (
-                <div
-                  key={it.q}
-                  className="rounded-2xl border border-white/10 bg-black/35"
-                >
+                <div key={it.q}>
                   <button
                     type="button"
                     onClick={() => setOpenIndex(isOpen ? null : idx)}
-                    className="flex w-full items-center justify-between gap-4 px-6 py-6 text-left"
+                    className="flex w-full items-start justify-between gap-6 text-left"
                     aria-expanded={isOpen}
                   >
-                    <span className="text-sm font-medium text-white sm:text-base">
+                    <span className="text-[17px] font-medium text-[#F2EFEA] sm:text-lg">
                       {it.q}
                     </span>
 
-                    <span
-                      className={[
-                        "flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 text-white/70 transition",
-                        isOpen ? "bg-white/[0.08]" : "bg-transparent",
-                      ].join(" ")}
-                    >
-                      {isOpen ? "−" : "+"}
+                    {/* минимальный индикатор без рамок */}
+                    <span className="mt-1 text-[#CFCAC2]/70">
+                      {isOpen ? "—" : "+"}
                     </span>
                   </button>
 
-                  <div
-                    className={[
-                      "grid transition-[grid-template-rows] duration-200 ease-out",
-                      isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-                    ].join(" ")}
-                  >
-                    <div className="overflow-hidden">
-                      <div className="px-6 pb-6 text-sm leading-relaxed text-white/70 sm:text-base">
-                        {it.a}
-                      </div>
-                    </div>
-                  </div>
+                  {isOpen && (
+                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#CFCAC2] sm:text-base">
+                      {it.a}
+                    </p>
+                  )}
+
+                  {/* тонкий разделитель */}
+                  <div className="mt-6 h-px w-full bg-white/10" />
                 </div>
               );
             })}
           </div>
 
-          {/* subtle footer note */}
-          <p className="mt-6 text-xs text-white/45">
+          <p className="mt-10 max-w-xl text-xs text-[#CFCAC2]/70">
             Если вопрос нестандартный — опиши ситуацию в двух абзацах, этого достаточно для первичного ответа.
           </p>
         </div>
