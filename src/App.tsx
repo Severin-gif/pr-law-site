@@ -8,6 +8,7 @@ import AboutSection from "./components/AboutSection";
 import ServicesSection from "./components/ServicesSection";
 import InterludeSection from "./components/InterludeSection";
 import TrustSection from "./components/TrustSection";
+import CredentialsMiniSection from "./components/CredentialsMiniSection";
 
 import FAQSection from "./components/FAQSection";
 import ContactSection from "./components/ContactSection";
@@ -28,6 +29,7 @@ const App: React.FC = () => {
           <InterludeSection />
 
           <TrustSection />
+          <CredentialsMiniSection />
 
           {/* короткий FAQ (3–4 вопроса) */}
           <FAQSection />
