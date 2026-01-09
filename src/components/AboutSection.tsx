@@ -28,8 +28,8 @@ const AboutSection: React.FC = () => {
         {/* content */}
         <div className="relative z-10 mx-auto max-w-6xl px-6 py-14 md:px-10 md:py-20">
           <div className="max-w-2xl">
-            <div className="rounded-2xl border border-white/10 bg-black/25 p-6 backdrop-blur-md md:p-8">
-              <div className="flex items-center justify-between gap-4">
+            <div className="relative rounded-2xl border border-white/10 bg-black/25 p-6 backdrop-blur-md md:p-8">
+               <div className="flex items-center justify-between gap-4">
                 <h2 className="text-xl font-serif tracking-tight text-white">
                   О СЕБЕ
                 </h2>
@@ -37,20 +37,21 @@ const AboutSection: React.FC = () => {
                 <Link
                   to="/about"
                   className="
+                    absolute bottom-6 right-6
                     inline-flex items-center justify-center
                     rounded-xl
-                    border border-[#7D1F2A]/55
-                    bg-[#7D1F2A]/10
+                    bg-[#7D1F2A]
                     px-4 py-2
                     text-sm font-medium
-                    text-[#F3E9EB]
-                    hover:bg-[#7D1F2A]/18
-                    hover:border-[#7D1F2A]/75
+                    text-white
+                    shadow-[0_10px_24px_rgba(125,31,42,0.25)]
+                    hover:bg-[#8E2430]
                     transition
                   "
                 >
                   Подробнее
                 </Link>
+
               </div>
 
               <p className="mt-6 text-lg font-serif leading-relaxed text-slate-100">

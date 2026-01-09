@@ -1,4 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import { RequestAuditModal } from "./RequestAuditModal";
+
+export function Hero() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="rounded-xl bg-[#8B1F2D] px-6 py-3 text-sm font-semibold text-white hover:brightness-110"
+      >
+        Запросить разбор
+      </button>
+
+      <RequestAuditModal open={open} onClose={() => setOpen(false)} />
+    </>
+  );
+}
 
 const Hero: React.FC = () => {
   return (
