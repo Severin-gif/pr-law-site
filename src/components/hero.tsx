@@ -1,27 +1,4 @@
-import { useState } from "react";
-import { RequestAuditModal } from "./RequestAuditModal"; // путь подстрой, если модалка в другом месте
-
 export default function Hero() {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <section id="hero">
-        {/* твой текущий hero-UI здесь, кнопку оставь */}
-        <button
-          onClick={() => setOpen(true)}
-          className="rounded-xl bg-[#8B1F2D] px-6 py-3 text-sm font-semibold text-white hover:brightness-110"
-        >
-          Запросить разбор
-        </button>
-      </section>
-
-      <RequestAuditModal open={open} onClose={() => setOpen(false)} />
-    </>
-  );
-}
-
-const Hero: React.FC = () => {
   return (
     <section
       id="hero"
@@ -74,6 +51,4 @@ const Hero: React.FC = () => {
       <div className="pointer-events-none absolute inset-0 rounded-[32px] ring-1 ring-white/10" />
     </section>
   );
-};
-
-export default Hero;
+}
