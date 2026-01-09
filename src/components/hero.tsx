@@ -1,17 +1,20 @@
-import React, { useState } from "react";
-import { RequestAuditModal } from "./RequestAuditModal";
+import { useState } from "react";
+import { RequestAuditModal } from "./RequestAuditModal"; // путь подстрой, если модалка в другом месте
 
-export function Hero() {
+export default function Hero() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        className="rounded-xl bg-[#8B1F2D] px-6 py-3 text-sm font-semibold text-white hover:brightness-110"
-      >
-        Запросить разбор
-      </button>
+      <section id="hero">
+        {/* твой текущий hero-UI здесь, кнопку оставь */}
+        <button
+          onClick={() => setOpen(true)}
+          className="rounded-xl bg-[#8B1F2D] px-6 py-3 text-sm font-semibold text-white hover:brightness-110"
+        >
+          Запросить разбор
+        </button>
+      </section>
 
       <RequestAuditModal open={open} onClose={() => setOpen(false)} />
     </>
