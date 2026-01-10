@@ -1,52 +1,28 @@
 import express from "express";
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// API
 app.use(express.json());
 
-app.post("/api/request-audit", async (req, res) => {
-  const { name, contact, message, hp } = req.body || {};
-  if (hp && String(hp).trim().length > 0) return res.json({ ok: true });
+// твои /api/request-audit и другие API здесь
 
-  if (!name || !contact || !message) return res.status(400).json({ error: "Заполните поля" });
+// === STATIC FRONTEND ===
+const distPath = path.join(__dirname, "..", "dist");
+app.use(express.static(distPath));
 
-  const nm = String(name).trim();
-  const ct = String(contact).trim();
-  const msg = String(message).trim();
-
-  if (nm.length < 2) return res.status(400).json({ error: "Имя слишком короткое" });
-  if (ct.length < 5) return res.status(400).json({ error: "Контакт некорректный" });
-  if (msg.length < 10) return res.status(400).json({ error: "Сообщение слишком короткое" });
-
-  const {
-    SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS,
-    SMTP_FROM, LEADS_TO_EMAIL
-  } = process.env;
-
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !SMTP_FROM || !LEADS_TO_EMAIL) {
-    return res.status(500).json({ error: "SMTP/Email не настроен на сервере" });
-  }
-
-  const transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: Number(SMTP_PORT || 465),
-    secure: String(SMTP_SECURE || "true") === "true",
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-  });
-
-  await transporter.sendMail({
-    from: SMTP_FROM,
-    to: LEADS_TO_EMAIL,
-    subject: `Запрос разбора: ${nm}`,
-    text: `Новый запрос с сайта\n\nИмя: ${nm}\nКонтакт: ${ct}\n\nСообщение:\n${msg}\n`,
-    replyTo: ct.includes("@") ? ct : undefined,
-  });
-
-  return res.json({ ok: true });
+// SPA fallback
+app.get("*", (req, res) => {
+  res.sendFile(path.join(distPath, "index.html"));
 });
 
+// PORT
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Server: http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import TrustConsultationsTab from "./doc/TrustConsultationsTab";
 import TrustDiplomasTab from "./doc/TrustDiplomasTab";
-import TrustLettersTab from "./doc//TrustLettersTab";
+import TrustLettersTab from "./doc/TrustLettersTab";
+import TrustCourtPracticeTab from "./doc/TrustCourtPracticeTab";
 
-type TabKey = "consult" | "docs" | "letters";
+type TabKey = "consult" | "docs" | "letters" | "practice";
 
 export default function TrustSection() {
   const [tab, setTab] = useState<TabKey>("consult");
@@ -21,15 +22,21 @@ export default function TrustSection() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/30 p-1">
+          <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-black/30 p-1">
             <TabButton active={tab === "consult"} onClick={() => setTab("consult")}>
               Консультации
             </TabButton>
+
             <TabButton active={tab === "docs"} onClick={() => setTab("docs")}>
               Дипломы
             </TabButton>
+
             <TabButton active={tab === "letters"} onClick={() => setTab("letters")}>
               Письма
+            </TabButton>
+
+            <TabButton active={tab === "practice"} onClick={() => setTab("practice")}>
+              Судебная практика
             </TabButton>
           </div>
         </div>
@@ -38,6 +45,7 @@ export default function TrustSection() {
           {tab === "consult" && <TrustConsultationsTab />}
           {tab === "docs" && <TrustDiplomasTab />}
           {tab === "letters" && <TrustLettersTab />}
+          {tab === "practice" && <TrustCourtPracticeTab />}
         </div>
       </div>
     </section>
