@@ -14,16 +14,12 @@ const ContactSection: React.FC = () => {
             действий.
           </p>
           <div>
-            <div className="text-xs text-slate-400">Телефон</div>
-            <div className="text-sm text-slate-100">+7 (___) ___-__-__</div>
-          </div>
-          <div>
-            <div className="text-xs text-slate-400">E-mail</div>
-            <div className="text-sm text-slate-100">example@mail.ru</div>
+           <div className="text-xs text-slate-400">E-mail</div>
+            <div className="text-sm text-slate-100">LEGAL@LIVE.ru</div>
           </div>
           <div>
             <div className="text-xs text-slate-400">Telegram</div>
-            <div className="text-sm text-slate-100">@username</div>
+            <div className="text-sm text-slate-100">@slava_vest</div>
           </div>
         </div>
 
