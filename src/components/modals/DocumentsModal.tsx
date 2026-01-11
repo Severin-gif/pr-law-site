@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export type DocSlide = {
   src: string;   // e.g. "/docs/diploma-law.jpg"

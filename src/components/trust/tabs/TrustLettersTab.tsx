@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function TrustLettersTab() {
   return (
     <div className="max-w-3xl text-sm text-white/70 sm:text-base">
