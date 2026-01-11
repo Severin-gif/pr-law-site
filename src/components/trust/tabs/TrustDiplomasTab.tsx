@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
-import DocumentsModal from "../DocumentsModal";
-import type { DocSlide } from "../DocumentsModal";
+import DocumentsModal from "../../modals/DocumentsModal";
+import type { DocSlide } from "../../modals/DocumentsModal";
 
 export default function TrustDiplomasTab() {
   const slides = useMemo<DocSlide[]>(

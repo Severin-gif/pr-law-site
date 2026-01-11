@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function QuoteSection() {
   return (
     <section className="px-6 pt-10 pb-6 sm:px-10 sm:pt-12 sm:pb-8 lg:px-16 lg:pt-14 lg:pb-10">

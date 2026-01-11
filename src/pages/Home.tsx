@@ -1,15 +1,15 @@
 import React from "react";
 
-import Header from "../components/header";
-import Footer from "../components/Footer";
+import Header from "../components/layout/Header";
+import Footer from "../components/layout/Footer";
 
-import Hero from "../components/hero";
-import AboutSection from "../components/AboutSection";
-import ServicesSection from "../components/ServicesSection";
+import Hero from "../components/layout/Hero";
+import AboutSection from "../components/sections/AboutSection";
+import ServicesSection from "../components/sections/ServicesSection";
 import InterludeSection from "../components/InterludeSection";
-import TrustSection from "../components/TrustSection";
-import FAQSection from "../components/FAQSection";
-import ContactSection from "../components/ContactSection";
+import TrustSection from "../components/trust/TrustSection";
+import FAQSection from "../components/sections/FAQSection";
+import ContactSection from "../components/sections/ContactSection";
 
 const Home: React.FC = () => {
   return (

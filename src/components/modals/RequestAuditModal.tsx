@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
 type Props = {
   open: boolean;
@@ -32,7 +32,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
     }
   }, [open]);
 
-  async function onSubmit(e: React.FormEvent) {
+  async function onSubmit(e: FormEvent) {
     e.preventDefault();
     setStatus("sending");
     setErrorText("");
@@ -50,9 +50,9 @@ export function RequestAuditModal({ open, onClose }: Props) {
       }
 
       setStatus("ok");
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus("error");
-      setErrorText(err?.message || "Ошибка отправки");
+      setErrorText(err instanceof Error ? err.message : "Ошибка отправки");
     }
   }
 
