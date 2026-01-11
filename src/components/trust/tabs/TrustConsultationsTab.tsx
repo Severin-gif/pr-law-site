@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 type ConsultationItem = {
   id: string;
@@ -119,27 +119,30 @@ function ConsultationModal({
   onClose: () => void;
 }) {
   const [zoom, setZoom] = useState(false);
+  const handleClose = useCallback(() => {
+    setZoom(false);
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     if (!open) return;
-    setZoom(false);
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         if (zoom) setZoom(false);
-        else onClose();
+        else handleClose();
       }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open, onClose, zoom]);
+  }, [open, zoom, handleClose]);
 
   if (!open || !item) return null;
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center px-4"
-      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+      onMouseDown={(e) => e.target === e.currentTarget && handleClose()}
       role="dialog"
       aria-modal="true"
     >
@@ -155,7 +158,7 @@ function ConsultationModal({
 
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="shrink-0 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/80 hover:bg-white/5"
           >
             Закрыть

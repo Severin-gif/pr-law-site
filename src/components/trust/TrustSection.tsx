@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import TrustConsultationsTab from "./doc/TrustConsultationsTab";
-import TrustDiplomasTab from "./doc/TrustDiplomasTab";
-import TrustLettersTab from "./doc/TrustLettersTab";
-import TrustCourtPracticeTab from "./doc/TrustCourtPracticeTab";
+import TrustConsultationsTab from "./tabs/TrustConsultationsTab";
+import TrustDiplomasTab from "./tabs/TrustDiplomasTab";
+import TrustLettersTab from "./tabs/TrustLettersTab";
+import TrustCourtPracticeTab from "./tabs/TrustCourtPracticeTab";
 
 type TabKey = "consult" | "docs" | "letters" | "practice";
 
