@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
-import TrustConsultationsTab from "./doc/TrustConsultationsTab";
-import TrustDiplomasTab from "./doc/TrustDiplomasTab";
-import TrustCourtPracticeTab from "./doc/TrustCourtPracticeTab";
+import TrustConsultationsTab from "./tabs/TrustConsultationsTab";
+import TrustDiplomasTab from "./tabs/TrustDiplomasTab";
+import TrustCourtPracticeTab from "./tabs/TrustCourtPracticeTab";
 
 type TabKey = "consult" | "docs" | "practice";
 

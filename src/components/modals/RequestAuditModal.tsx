@@ -10,7 +10,9 @@ export function RequestAuditModal({ open, onClose }: Props) {
   const [contact, setContact] = useState(""); // телефон/telegram/email
   const [message, setMessage] = useState("");
   const [honeypot, setHoneypot] = useState(""); // антиспам: должен быть пустым
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
+    "idle"
+  );
   const [errorText, setErrorText] = useState<string>("");
 
   useEffect(() => {
@@ -112,7 +114,9 @@ export function RequestAuditModal({ open, onClose }: Props) {
           </div>
 
           <div>
-            <label className="text-xs text-white/60">Контакт (телефон / Telegram / email)</label>
+            <label className="text-xs text-white/60">
+              Контакт (телефон / Telegram / email)
+            </label>
             <input
               value={contact}
               onChange={(e) => setContact(e.target.value)}
@@ -159,3 +163,5 @@ export function RequestAuditModal({ open, onClose }: Props) {
     </div>
   );
 }
+
+export default RequestAuditModal;

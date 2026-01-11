@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import RequestReviewModal from "./RequestReviewModal";
+import RequestAuditModal from "../modals/RequestAuditModal";
 
 const Hero: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -8,7 +8,7 @@ const Hero: React.FC = () => {
     <>
       <section
         id="hero"
-        className="relative mt-10 min-h-[65vh] sm:min-h-[70vh] overflow-hidden rounded-[32px] bg-[#0B0D10]"
+        className="relative mt-10 min-h-[65vh] overflow-hidden rounded-[32px] bg-[#0B0D10] sm:min-h-[70vh]"
         aria-label="Главный экран"
       >
         {/* BACKGROUND PHOTO */}
@@ -27,7 +27,7 @@ const Hero: React.FC = () => {
         <div className="absolute inset-0 shadow-[inset_0_0_180px_rgba(0,0,0,0.6)]" />
 
         {/* CONTENT */}
-          <div className="relative z-10 flex h-full items-center px-6 py-24 sm:px-10 sm:py-32 lg:px-16 lg:py-36">
+        <div className="relative z-10 flex h-full items-center px-6 py-24 sm:px-10 sm:py-32 lg:px-16 lg:py-36">
           <div className="max-w-2xl">
             <h1 className="font-serif text-[48px] leading-[0.95] tracking-tight text-[#EDE6D8] sm:text-[60px] lg:text-[72px]">
               ЧАСТНЫЙ
@@ -56,7 +56,7 @@ const Hero: React.FC = () => {
         <div className="pointer-events-none absolute inset-0 rounded-[32px] ring-1 ring-white/10" />
       </section>
 
-      <RequestReviewModal open={open} onClose={() => setOpen(false)} />
+      <RequestAuditModal open={open} onClose={() => setOpen(false)} />
     </>
   );
 };
