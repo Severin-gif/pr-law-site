@@ -1,19 +1,25 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import TrustConsultationsTab from "./doc/TrustConsultationsTab";
 import TrustDiplomasTab from "./doc/TrustDiplomasTab";
-import TrustLettersTab from "./doc/TrustLettersTab";
 import TrustCourtPracticeTab from "./doc/TrustCourtPracticeTab";
 
-type TabKey = "consult" | "docs" | "letters" | "practice";
+type TabKey = "consult" | "docs" | "practice";
+
+const TABS: { key: TabKey; label: string }[] = [
+  { key: "consult", label: "Консультации" },
+  { key: "docs", label: "Дипломы" },
+  { key: "practice", label: "Судебная практика" },
+];
 
 export default function TrustSection() {
   const [tab, setTab] = useState<TabKey>("consult");
+  const tabs = useMemo(() => TABS, []);
 
   return (
     <section id="trust" className="py-2">
       <div className="rounded-[28px] border border-white/10 bg-white/[0.02] p-8 sm:p-10">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <div>
+          <div className="max-w-[680px]">
             <h2 className="font-serif text-[28px] text-white sm:text-[34px]">
               Почему мне доверяют
             </h2>
@@ -23,28 +29,21 @@ export default function TrustSection() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-black/30 p-1">
-            <TabButton active={tab === "consult"} onClick={() => setTab("consult")}>
-              Консультации
-            </TabButton>
-
-            <TabButton active={tab === "docs"} onClick={() => setTab("docs")}>
-              Дипломы
-            </TabButton>
-
-            <TabButton active={tab === "letters"} onClick={() => setTab("letters")}>
-              Письма
-            </TabButton>
-
-            <TabButton active={tab === "practice"} onClick={() => setTab("practice")}>
-              Судебная практика
-            </TabButton>
+            {tabs.map((t) => (
+              <TabButton
+                key={t.key}
+                active={tab === t.key}
+                onClick={() => setTab(t.key)}
+              >
+                {t.label}
+              </TabButton>
+            ))}
           </div>
         </div>
 
         <div className="mt-8">
           {tab === "consult" && <TrustConsultationsTab />}
           {tab === "docs" && <TrustDiplomasTab />}
-          {tab === "letters" && <TrustLettersTab />}
           {tab === "practice" && <TrustCourtPracticeTab />}
         </div>
       </div>
@@ -67,7 +66,9 @@ function TabButton({
       onClick={onClick}
       className={[
         "rounded-xl px-4 py-2 text-sm transition",
-        active ? "bg-white/[0.08] text-white" : "text-white/70 hover:text-white",
+        active
+          ? "bg-white/[0.08] text-white"
+          : "text-white/70 hover:text-white",
       ].join(" ")}
     >
       {children}

@@ -1,21 +1,24 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
   return (
     <footer className="border-t border-white/5 bg-black/95">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-4 py-4 text-xs text-slate-500 md:flex-row">
-        <div>© {new Date().getFullYear()} Частный юрист</div>
-        <div className="flex gap-4">
-          <a href="#services" className="hover:text-slate-300">
-            Услуги
-          </a>
-          <a href="#trust" className="hover:text-slate-300">
-            Почему доверяют
-          </a>
-          <a href="#contact" className="hover:text-slate-300">
-            Обратная связь
-          </a>
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 text-xs text-slate-500 md:flex-row md:items-center md:justify-between">
+        
+        <div>
+          © {new Date().getFullYear()} Частный юрист
         </div>
+
+        <div className="flex flex-wrap gap-4">
+          <Link to="/privacy" className="hover:text-slate-300">
+            Политика конфиденциальности
+          </Link>
+          <Link to="/terms" className="hover:text-slate-300">
+            Правила пользования сайтом
+          </Link>
+        </div>
+
       </div>
     </footer>
   );
