@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "tsc -b && vite build",
+       "build": 
+       "tsc -b && vite build && node -e \"const fs=require('fs'); const path=require('path'); const src='dist'; const dst='public_build'; fs.rmSync(dst,{recursive:true,force:true}); fs.mkdirSync(dst,{recursive:true}); fs.cpSync(src,dst,{recursive:true});\"",
         "lint": "eslint .",
         "preview": "vite preview",
         "server": "node server/index.js"
