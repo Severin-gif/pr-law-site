@@ -6,17 +6,17 @@ export default function TrustDiplomasTab() {
   const slides = useMemo<DocSlide[]>(
     () => [
       {
-        src: "/docs/diploma-law.jpg",
+        src: "/docs/diploma-law.png",
         title: "Высшее юридическое образование",
         note: "гос. диплом",
       },
       {
-        src: "/docs/rosreestr-au-2024-front.jpg",
+        src: "/docs/rosreestr-au-2024-front.png",
         title: "Арбитраж / банкротство",
         note: "свидетельство (экзамен)",
       },
       {
-        src: "/docs/uniweb-gr-2014.jpg",
+        src: "/docs/uniweb-gr-2014.png",
         title: "GR: поддержка интересов бизнеса",
         note: "доп. подготовка",
       },
