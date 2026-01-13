@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 
 export type DocSlide = {
-  src: string;   // e.g. "/docs/diploma-law.jpg"
+  src: string;   // e.g. "/docs/diploma-law.png"
   title: string; // e.g. "Высшее юридическое образование"
   note?: string; // optional small caption
 };
