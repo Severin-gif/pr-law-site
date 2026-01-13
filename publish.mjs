@@ -4,6 +4,10 @@ import path from "node:path";
 
 const srcDir = path.resolve("dist");
 const outDir = path.resolve(".");
+const srcIndex = path.join(srcDir, "index.html");
+const srcAssets = path.join(srcDir, "assets");
+const outIndex = path.join(outDir, "index.html");
+const outAssets = path.join(outDir, "assets");
 
 function copyDir(src, dst) {
   fs.mkdirSync(dst, { recursive: true });
@@ -15,10 +19,15 @@ function copyDir(src, dst) {
   }
 }
 
+if (fs.existsSync(srcIndex)) {
+  fs.copyFileSync(srcIndex, outIndex);
+}
+
 // чистим старые assets (чтобы не было мусора)
-fs.rmSync(path.join(outDir, "assets"), { recursive: true, force: true });
+fs.rmSync(outAssets, { recursive: true, force: true });
 
-// копируем dist/* → ./*
-copyDir(srcDir, outDir);
+if (fs.existsSync(srcAssets)) {
+  copyDir(srcAssets, outAssets);
+}
 
-console.log("Published dist/* to repo root");
+console.log("published dist to root");
