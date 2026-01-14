@@ -1,22 +1,23 @@
 import React, { useMemo, useState } from "react";
 import DocumentsModal from "../../modals/DocumentsModal";
 import type { DocSlide } from "../../modals/DocumentsModal";
+import { publicUrl } from "../../../utils/publicUrl";
 
 export default function TrustDiplomasTab() {
   const slides = useMemo<DocSlide[]>(
     () => [
       {
-        src: "/docs/diploma-law.png",
+        src: publicUrl("diploma-law.png"),
         title: "Высшее юридическое образование",
         note: "гос. диплом",
       },
       {
-        src: "/docs/rosreestr-au-2024-front.png",
+        src: publicUrl("rosreestr-au-2024-front.png"),
         title: "Арбитраж / банкротство",
         note: "свидетельство (экзамен)",
       },
       {
-        src: "/docs/uniweb-gr-2014.png",
+        src: publicUrl("uniweb-gr-2014.png"),
         title: "GR: поддержка интересов бизнеса",
         note: "доп. подготовка",
       },

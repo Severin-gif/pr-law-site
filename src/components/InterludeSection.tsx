@@ -1,4 +1,5 @@
 import React from "react";
+import { publicUrl } from "../utils/publicUrl";
 
 const InterludeSection: React.FC = () => {
   return (
@@ -39,7 +40,7 @@ const InterludeSection: React.FC = () => {
           <div className="relative overflow-hidden rounded-[22px] bg-black shadow-[0_10px_40px_rgba(0,0,0,0.45)]">
             <div
               className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/compr3.jpg)" }}
+              style={{ backgroundImage: `url(${publicUrl("compr3.jpg")})` }}
             />
             {/* overlays for premium look */}
             <div className="absolute inset-0 bg-black/20" />

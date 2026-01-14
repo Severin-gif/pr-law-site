@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { publicUrl } from "../utils/publicUrl";
 
 type LetterItem = {
   id: string;
@@ -12,19 +13,19 @@ const LETTERS: LetterItem[] = [
     id: "letter-01",
     title: "Претензия по договору подряда",
     note: "срыв сроков, удержание оплаты",
-    preview: "/letters/letter-01.jpg",
+    preview: publicUrl("letters/letter-01.jpg"),
   },
   {
     id: "letter-02",
     title: "Досудебная позиция по взысканию",
     note: "подготовка к иску",
-    preview: "/letters/letter-02.jpg",
+    preview: publicUrl("letters/letter-02.jpg"),
   },
   {
     id: "letter-03",
     title: "Ответ на претензию контрагента",
     note: "нейтрализация рисков",
-    preview: "/letters/letter-03.jpg",
+    preview: publicUrl("letters/letter-03.jpg"),
   },
 ];
 
