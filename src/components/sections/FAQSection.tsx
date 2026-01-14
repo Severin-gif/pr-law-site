@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { publicUrl } from "../../utils/publicUrl";
 
 type QA = { q: string; a: string };
 
@@ -29,7 +30,7 @@ export default function FAQSection() {
       id="faq"
       className="relative overflow-hidden rounded-[28px]"
       style={{
-        backgroundImage: "url(/biblio.jpg)",
+        backgroundImage: `url(${publicUrl("biblio.jpg")})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

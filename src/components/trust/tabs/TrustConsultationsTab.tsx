@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { publicUrl } from "../../../utils/publicUrl";
 
 type ConsultationItem = {
   id: string;
@@ -23,8 +24,8 @@ const CONSULTATIONS: ConsultationItem[] = [
       "риски и сценарии",
       "что делать / чего не делать",
     ],
-    previewImage: "/samples/consultation-01/preview.jpg",
-    pdf: "/files/consultation-01.pdf",
+    previewImage: publicUrl("samples/consultation-01/preview.jpg"),
+    pdf: publicUrl("files/consultation-01.pdf"),
   },
   {
     id: "consultation-02",
@@ -38,7 +39,7 @@ const CONSULTATIONS: ConsultationItem[] = [
       "сценарии: претензия / переговоры / суд",
       "план действий на 7–14 дней",
     ],
-    previewImage: "/samples/consultation-02/preview.jpg",
+    previewImage: publicUrl("samples/consultation-02/preview.jpg"),
   },
   {
     id: "consultation-03",
@@ -52,7 +53,7 @@ const CONSULTATIONS: ConsultationItem[] = [
       "как правильно начать переписку/претензию",
       "когда имеет смысл суд",
     ],
-    previewImage: "/samples/consultation-03/preview.jpg",
+    previewImage: publicUrl("samples/consultation-03/preview.jpg"),
   },
 ];
 

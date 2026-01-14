@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { publicUrl } from "../utils/publicUrl";
 
 type LetterItem = {
   id: string;
@@ -14,21 +15,21 @@ const LETTERS: LetterItem[] = [
     title: "Благодарственное письмо",
     from: "контрагент / руководитель проекта",
     note: "Подтверждение качества письменной позиции и скорости реакции в спорной ситуации.",
-    image: "/letters/letter-01.jpg",
+    image: publicUrl("letters/letter-01.jpg"),
   },
   {
     id: "l-02",
     title: "Рекомендательное письмо",
     from: "собственник бизнеса",
     note: "Подтверждение надёжности, самостоятельности и результата в переговорах.",
-    image: "/letters/letter-02.jpg",
+    image: publicUrl("letters/letter-02.jpg"),
   },
   {
     id: "l-03",
     title: "Отзыв по сопровождению спора",
     from: "директор / юрист компании",
     note: "Подтверждение подхода: факты → риски → решения → план действий.",
-    image: "/letters/letter-03.jpg",
+    image: publicUrl("letters/letter-03.jpg"),
   },
 ];
 
