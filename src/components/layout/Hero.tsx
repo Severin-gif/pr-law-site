@@ -1,50 +1,73 @@
-import React, { useState } from "react";
-import RequestAuditModal from "../modals/RequestAuditModal";
+import React, { useMemo, useState } from "react";
 import { publicUrl } from "../../utils/publicUrl";
+import RequestAuditModal from "../modals/RequestAuditModal";
 
 const Hero: React.FC = () => {
   const [open, setOpen] = useState(false);
+
+  // Всегда ведём к /docs/... (локально и на проде)
+  const bg = useMemo(() => publicUrl("07.jpg"), []);
 
   return (
     <>
       <section
         id="hero"
         aria-label="Главный экран"
-        className="relative mt-10 min-h-[65vh] sm:min-h-[70vh] overflow-hidden rounded-[32px] bg-[#0B0D10]"
+        className="relative mt-10 min-h-[65vh] overflow-hidden rounded-[32px] bg-[#0B0D10] sm:min-h-[70vh]"
       >
-        {/* BACKGROUND IMAGE */}
+        {/* BACKGROUND PHOTO */}
         <div
+          aria-hidden="true"
           className="absolute inset-0 bg-cover bg-no-repeat"
           style={{
-            backgroundImage: `url(${publicUrl("docs/07.jpg")})`,
+            backgroundImage: `url("${bg}")`,
             backgroundPosition: "85% 50%",
           }}
         />
 
-        {/* DARK OVERLAY */}
-        <div className="absolute inset-0 bg-black/55" />
+        {/* READABILITY GRADIENT */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-gradient-to-r from-[#0B0D10]/95 via-[#0B0D10]/65 to-transparent"
+        />
+
+        {/* SOFT VIGNETTE */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 shadow-[inset_0_0_180px_rgba(0,0,0,0.6)]"
+        />
 
         {/* CONTENT */}
-        <div className="relative z-10 flex h-full flex-col justify-center px-8 sm:px-14 max-w-3xl">
-          <h1 className="text-[42px] sm:text-[56px] leading-tight font-serif text-white">
-            ЧАСТНЫЙ
-            <br />
-            ЮРИСТ
-          </h1>
+        <div className="relative z-10 flex h-full items-center px-6 py-24 sm:px-10 sm:py-32 lg:px-16 lg:py-36">
+          <div className="max-w-2xl">
+            <h1 className="font-serif text-[48px] leading-[0.95] tracking-tight text-[#EDE6D8] sm:text-[60px] lg:text-[72px]">
+              ЧАСТНЫЙ
+              <br />
+              ЮРИСТ
+            </h1>
 
-          <p className="mt-6 max-w-xl text-white/80 text-sm sm:text-base">
-            Работаю с юридическими рисками и конфликтами — до того, как начинается суд
-          </p>
+            <p className="mt-8 max-w-xl text-sm leading-relaxed text-[#D0D6E3] sm:text-base">
+              Работаю с юридическими рисками и конфликтами — до того, как
+              начинается суд
+            </p>
 
-          <div className="mt-10">
-            <button
-              onClick={() => setOpen(true)}
-              className="rounded-full bg-[#8B1D2C] px-8 py-4 text-sm font-medium text-white hover:bg-[#A12436] transition"
-            >
-              Запросить разбор
-            </button>
+            <div className="mt-10">
+              <button
+                type="button"
+                onClick={() => setOpen(true)}
+                className="inline-flex items-center justify-center rounded-full bg-[#8B1E2D] px-8 py-3.5 text-sm font-medium text-white shadow-[0_18px_52px_rgba(139,30,45,0.4)] transition hover:bg-[#A32537]"
+              >
+                Запросить разбор
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* SUBTLE BORDER */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 rounded-[32px] ring-1 ring-white/10"
+        />
       </section>
 
       <RequestAuditModal open={open} onClose={() => setOpen(false)} />
