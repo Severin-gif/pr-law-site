@@ -24,8 +24,8 @@ const CONSULTATIONS: ConsultationItem[] = [
       "риски и сценарии",
       "что делать / чего не делать",
     ],
-    previewImage: publicUrl("samples/consultation-01/preview.jpg"),
-    pdf: publicUrl("files/consultation-01.pdf"),
+    previewImage: publicUrl("compr1.jpg"),
+    pdf: publicUrl("arbitr-pra.pdf"),
   },
   {
     id: "consultation-02",
@@ -39,7 +39,7 @@ const CONSULTATIONS: ConsultationItem[] = [
       "сценарии: претензия / переговоры / суд",
       "план действий на 7–14 дней",
     ],
-    previewImage: publicUrl("samples/consultation-02/preview.jpg"),
+    previewImage: publicUrl("compr2.jpeg"),
   },
   {
     id: "consultation-03",
@@ -53,7 +53,7 @@ const CONSULTATIONS: ConsultationItem[] = [
       "как правильно начать переписку/претензию",
       "когда имеет смысл суд",
     ],
-    previewImage: publicUrl("samples/consultation-03/preview.jpg"),
+    previewImage: publicUrl("compr3.jpg"),
   },
 ];
 

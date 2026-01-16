@@ -15,21 +15,21 @@ const LETTERS: LetterItem[] = [
     title: "Благодарственное письмо",
     from: "контрагент / руководитель проекта",
     note: "Подтверждение качества письменной позиции и скорости реакции в спорной ситуации.",
-    image: publicUrl("letters/letter-01.jpg"),
+    image: publicUrl("diparb.png"),
   },
   {
     id: "l-02",
     title: "Рекомендательное письмо",
     from: "собственник бизнеса",
     note: "Подтверждение надёжности, самостоятельности и результата в переговорах.",
-    image: publicUrl("letters/letter-02.jpg"),
+    image: publicUrl("diploma-law.png"),
   },
   {
     id: "l-03",
     title: "Отзыв по сопровождению спора",
     from: "директор / юрист компании",
     note: "Подтверждение подхода: факты → риски → решения → план действий.",
-    image: publicUrl("letters/letter-03.jpg"),
+    image: publicUrl("rosreestr-au-2024-front.png"),
   },
 ];
 
