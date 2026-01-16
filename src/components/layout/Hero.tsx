@@ -15,7 +15,7 @@ const Hero: React.FC = () => {
         <div
           className="absolute inset-0 bg-cover bg-no-repeat"
           style={{
-            backgroundImage: "url('/07.jpg')",
+            backgroundImage: "url('doc/07.jpg')",
             backgroundPosition: "85% 50%",
           }}
         />
