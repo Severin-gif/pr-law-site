@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { publicUrl } from "../../../utils/publicUrl";
 
 export default function TrustCourtPracticeTab() {
   const [open, setOpen] = useState(false);
@@ -57,7 +58,7 @@ export default function TrustCourtPracticeTab() {
         <Modal title="Судебное портфолио" onClose={() => setOpen(false)}>
           <div className="h-[70vh] w-[86vw] max-w-[1100px]">
             <iframe
-              src="/docs/arbitr-pra.pdf"
+              src={publicUrl("arbitr-pra.pdf")}
               title="Судебное портфолио"
               className="h-full w-full rounded-xl border border-white/10 bg-black"
             />

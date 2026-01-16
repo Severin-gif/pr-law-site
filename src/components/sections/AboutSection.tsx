@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { publicUrl } from "../../utils/publicUrl";
 
 const AboutSection: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const AboutSection: React.FC = () => {
             bg-[length:95%_auto] md:bg-[length:110%_auto]
             bg-[position:60%_50%] md:bg-[position:65%_50%]
           "
-          style={{ backgroundImage: "url(/17.jpg)" }}
+          style={{ backgroundImage: `url(${publicUrl("17.jpg")})` }}
         />
 
         {/* overlays */}
