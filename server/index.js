@@ -140,7 +140,7 @@ app.post("/api/lead", async (req, res) => {
 app.use(express.static(DIST_PATH, { index: false }));
 
 // --- SPA fallback (только после API и статики) ---
-app.get("*", (req, res) => {
+app.get(/^(?!\/api\/).*/, (req, res) => {
   res.sendFile(path.join(DIST_PATH, "index.html"));
 });
 
