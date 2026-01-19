@@ -59,12 +59,11 @@ const CONSULTATIONS: ConsultationItem[] = [
 
 export default function TrustConsultationsTab() {
   const [active, setActive] = useState<ConsultationItem | null>(null);
-
   const list = useMemo(() => CONSULTATIONS, []);
 
   return (
     <div className="max-w-4xl space-y-6 text-sm sm:text-base">
-      {/* intro (оставляем твою смысловую подачу, но без воды) */}
+      {/* intro */}
       <div className="space-y-2 text-white/70">
         <div className="text-white/80">
           Полноценные письменные консультации: разбор → риски → варианты действий → план.
@@ -93,19 +92,13 @@ export default function TrustConsultationsTab() {
                 </div>
               </div>
 
-              <div className="shrink-0 text-xs text-white/50">
-                Открыть →
-              </div>
+              <div className="shrink-0 text-xs text-white/50">Открыть →</div>
             </div>
           </button>
         ))}
       </div>
 
-      <ConsultationModal
-        open={!!active}
-        item={active}
-        onClose={() => setActive(null)}
-      />
+      <ConsultationModal open={!!active} item={active} onClose={() => setActive(null)} />
     </div>
   );
 }
@@ -120,6 +113,7 @@ function ConsultationModal({
   onClose: () => void;
 }) {
   const [zoom, setZoom] = useState(false);
+
   const handleClose = useCallback(() => {
     setZoom(false);
     onClose();
@@ -134,9 +128,20 @@ function ConsultationModal({
         else handleClose();
       }
     };
+
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
   }, [open, zoom, handleClose]);
+
+  // блокируем прокрутку body когда открыта модалка (стабильность на проде)
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   if (!open || !item) return null;
 
@@ -149,87 +154,100 @@ function ConsultationModal({
     >
       <div className="absolute inset-0 bg-black/70" />
 
-      <div className="relative w-full max-w-5xl rounded-2xl border border-white/10 bg-[#0B0D10] p-6 text-white shadow-2xl">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="text-xs text-white/55">{item.topic}</div>
-            <div className="mt-1 text-lg font-semibold">{item.title}</div>
-            <div className="mt-2 text-sm text-white/70">{item.desc}</div>
-          </div>
-
-          <button
-            type="button"
-            onClick={handleClose}
-            className="shrink-0 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/80 hover:bg-white/5"
-          >
-            Закрыть
-          </button>
-        </div>
-
-        <div className="mt-6 grid gap-6 lg:grid-cols-12">
-          {/* left */}
-          <div className="lg:col-span-4">
-            <div className="text-sm font-semibold text-white/90">Что внутри</div>
-            <ul className="mt-3 space-y-2 text-sm text-white/75">
-              {item.bullets.map((b) => (
-                <li key={b} className="flex gap-3">
-                  <span className="mt-2 h-1 w-1 rounded-full bg-white/40" />
-                  <span className="leading-relaxed">{b}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mt-6 space-y-3">
-              {item.pdf && (
-                <a
-                  href={item.pdf}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex w-full items-center justify-center rounded-xl bg-[#4B8BFF] px-5 py-3 text-sm font-medium text-white hover:brightness-110 transition"
-                >
-                  Открыть PDF
-                </a>
-              )}
-
-              <div className="text-xs text-white/45 leading-relaxed">
-                Образец демонстрирует формат. Не является консультацией по вашей ситуации
-                и не заменяет анализ документов.
-              </div>
-            </div>
-          </div>
-
-          {/* right: single preview */}
-          <div className="lg:col-span-8">
-            <div className="flex items-center justify-between">
-              <div className="text-xs text-white/55">
-                Превью (нажмите, чтобы увеличить)
-              </div>
-              <button
-                type="button"
-                onClick={() => setZoom(true)}
-                className="text-xs text-white/60 hover:text-white transition"
-              >
-                Увеличить →
-              </button>
+      {/* MODAL */}
+      <div className="relative w-full max-w-5xl rounded-2xl border border-white/10 bg-[#0B0D10] text-white shadow-2xl max-h-[78vh] overflow-hidden">
+        {/* header */}
+        <div className="p-6">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <div className="text-xs text-white/55">{item.topic}</div>
+              <div className="mt-1 text-lg font-semibold">{item.title}</div>
+              <div className="mt-2 text-sm text-white/70">{item.desc}</div>
             </div>
 
             <button
               type="button"
-              onClick={() => setZoom(true)}
-              className="mt-3 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20"
+              onClick={handleClose}
+              className="shrink-0 rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/80 hover:bg-white/5"
             >
-              <img
-                src={item.previewImage}
-                alt={`${item.title} — превью`}
-                className="w-full object-contain"
-                loading="lazy"
-              />
+              Закрыть
             </button>
+          </div>
+        </div>
+
+        {/* body (scroll container) */}
+        <div className="px-6 pb-6">
+          <div className="grid gap-6 lg:grid-cols-12 min-h-0">
+            {/* left */}
+            <div className="lg:col-span-4 min-h-0">
+              <div className="max-h-[58vh] lg:max-h-[60vh] overflow-auto pr-1">
+                <div className="text-sm font-semibold text-white/90">Что внутри</div>
+
+                <ul className="mt-3 space-y-2 text-sm text-white/75">
+                  {item.bullets.map((b) => (
+                    <li key={b} className="flex gap-3">
+                      <span className="mt-2 h-1 w-1 rounded-full bg-white/40" />
+                      <span className="leading-relaxed">{b}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="mt-6 space-y-3">
+                  {item.pdf && (
+                    <a
+                      href={item.pdf}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex w-full items-center justify-center rounded-xl bg-[#4B8BFF] px-5 py-3 text-sm font-medium text-white hover:brightness-110 transition"
+                    >
+                      Открыть PDF
+                    </a>
+                  )}
+
+                  <div className="text-xs text-white/45 leading-relaxed">
+                    Образец демонстрирует формат. Не является консультацией по вашей ситуации
+                    и не заменяет анализ документов.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* right */}
+            <div className="lg:col-span-8 min-h-0">
+              <div className="flex items-center justify-between">
+                <div className="text-xs text-white/55">Превью (нажмите, чтобы увеличить)</div>
+
+                <button
+                  type="button"
+                  onClick={() => setZoom(true)}
+                  className="text-xs text-white/60 hover:text-white transition"
+                >
+                  Увеличить →
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setZoom(true)}
+                className="mt-3 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20"
+                aria-label="Открыть увеличенное превью"
+              >
+                {/* фиксируем фрейм: стабильно на 100% масштабе */}
+                <div className="relative w-full aspect-[4/3] max-h-[60vh]">
+                  <img
+                    src={item.previewImage}
+                    alt={`${item.title} — превью`}
+                    className="absolute inset-0 h-full w-full object-contain"
+                    loading="lazy"
+                  />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* zoom (lightbox) */}
+      {/* ZOOM */}
       {zoom && (
         <div
           className="fixed inset-0 z-[60] flex items-center justify-center px-4"
@@ -238,6 +256,7 @@ function ConsultationModal({
           aria-modal="true"
         >
           <div className="absolute inset-0 bg-black/85" />
+
           <div className="relative w-full max-w-6xl">
             <div className="mb-3 flex justify-end">
               <button
@@ -248,11 +267,12 @@ function ConsultationModal({
                 Закрыть
               </button>
             </div>
+
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/20">
               <img
                 src={item.previewImage}
                 alt={`${item.title} — увеличено`}
-                className="w-full object-contain"
+                className="w-full max-h-[85vh] object-contain"
               />
             </div>
           </div>
