@@ -131,8 +131,8 @@ app.post("/api/lead", async (req, res) => {
 
     return res.json({ ok: true });
   } catch (e) {
-    // В проде лучше логировать e.message в файл/логгер
-    return res.status(500).json({ ok: false, error: "Server error" });
+    console.error("LEAD_ERROR:", e);
+  return res.status(500).json({ ok: false, error: "Server error" });
   }
 });
 
@@ -146,4 +146,8 @@ app.get(/^(?!\/api\/).*/, (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+
+  process.on("unhandledRejection", (e) => console.error("unhandledRejection:", e));
+  process.on("uncaughtException", (e) => console.error("uncaughtException:", e));
+
 });
