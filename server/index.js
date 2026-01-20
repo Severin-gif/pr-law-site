@@ -53,8 +53,8 @@ app.use((req, res, next) => {
 // --- Health ---
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
-// --- API: Lead form -> Email ---
-app.post("/api/lead", async (req, res) => {
+// --- Lead handler (one source of truth) ---
+async function leadHandler(req, res) {
   try {
     const { name, contact, message, hp, ts } = req.body || {};
 
