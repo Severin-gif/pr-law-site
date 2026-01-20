@@ -20,4 +20,4 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server ./server
 
 EXPOSE 3000
-CMD ["node", "server/index.js"]
+CMD ["npm", "start"]
