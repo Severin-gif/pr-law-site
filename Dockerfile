@@ -1,4 +1,5 @@
-FROM node:20-alpine AS build
+# -------- builder --------
+FROM node:20-slim AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -6,16 +7,17 @@ RUN npm ci
 
 COPY . .
 RUN npm run build
-RUN npm prune --omit=dev
 
-FROM node:20-alpine AS runtime
+# -------- runner --------
+FROM node:20-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-COPY --from=build /app/package.json /app/package-lock.json ./
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/server ./server
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
 
-EXPOSE 3001
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server ./server
+
+EXPOSE 3000
 CMD ["node", "server/index.js"]
