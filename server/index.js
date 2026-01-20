@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -6,6 +8,9 @@ import nodemailer from "nodemailer";
 // --- __dirname for ESM ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+process.on("unhandledRejection", (e) => console.error("unhandledRejection:", e));
+process.on("uncaughtException", (e) => console.error("uncaughtException:", e));
 
 const app = express();
 
@@ -29,12 +34,16 @@ function isPhoneLike(s) {
 }
 
 // --- Middlewares ---
-// JSON body limit: защита от мусора/спама
 app.use(express.json({ limit: "32kb" }));
 
-// Минимальный CORS (если фронт и сервер на одном домене — можно вообще убрать)
+// если фронт и API на одном домене — CORS не нужен.
+// если домены разные — укажи CORS_ORIGIN=https://www.letter-law.ru
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", process.env.CORS_ORIGIN || "*");
+  const origin = process.env.CORS_ORIGIN;
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.sendStatus(204);
@@ -46,16 +55,15 @@ app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 // --- API: Lead form -> Email ---
 app.post("/api/lead", async (req, res) => {
-app.post("/api/request-audit", leadHandler);
   try {
     const { name, contact, message, hp, ts } = req.body || {};
 
-    // honeypot: если бот заполнил — "успех", но ничего не делаем
+    // honeypot
     if (typeof hp === "string" && hp.trim().length > 0) {
       return res.json({ ok: true });
     }
 
-    // антибот "слишком быстро" (опционально)
+    // optional anti-bot
     if (typeof ts === "number" && Date.now() - ts < 1200) {
       return res.status(429).json({ ok: false, error: "Too fast" });
     }
@@ -67,7 +75,6 @@ app.post("/api/request-audit", leadHandler);
     if (n.length < 2 || n.length > 80) {
       return res.status(400).json({ ok: false, error: "Некорректное имя" });
     }
-
     if (c.length < 3 || c.length > 120) {
       return res.status(400).json({ ok: false, error: "Некорректный контакт" });
     }
@@ -90,11 +97,11 @@ app.post("/api/request-audit", leadHandler);
     const from = mustEnv("LEADS_FROM_EMAIL");
 
     const transporter = nodemailer.createTransport({
-      host: mustEnv("SMTP_HOST"),          // smtp.timeweb.ru
-      port: Number(mustEnv("SMTP_PORT")),  // 465
+      host: mustEnv("SMTP_HOST"), // smtp.timeweb.ru
+      port: Number(mustEnv("SMTP_PORT")), // 465
       secure: String(process.env.SMTP_SECURE || "true") === "true",
       auth: {
-        user: mustEnv("SMTP_USER"),        // lead@letter-law.ru
+        user: mustEnv("SMTP_USER"),
         pass: mustEnv("SMTP_PASS"),
       },
     });
@@ -133,22 +140,22 @@ app.post("/api/request-audit", leadHandler);
     return res.json({ ok: true });
   } catch (e) {
     console.error("LEAD_ERROR:", e);
-  return res.status(500).json({ ok: false, error: "Server error" });
+    return res.status(500).json({ ok: false, error: "Server error" });
   }
-});
+}
 
-// --- STATIC FRONTEND ---
+// --- API routes (alias to match your production request) ---
+app.post("/api/lead", leadHandler);
+app.post("/api/request-audit", leadHandler);
+
+// --- Static frontend ---
 app.use(express.static(DIST_PATH, { index: false }));
 
-// --- SPA fallback (только после API и статики) ---
+// --- SPA fallback (Express 5 safe, and does NOT catch /api/*) ---
 app.get(/^(?!\/api\/).*/, (req, res) => {
   res.sendFile(path.join(DIST_PATH, "index.html"));
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
-
-  process.on("unhandledRejection", (e) => console.error("unhandledRejection:", e));
-  process.on("uncaughtException", (e) => console.error("uncaughtException:", e));
-
 });
