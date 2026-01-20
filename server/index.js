@@ -46,6 +46,7 @@ app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 // --- API: Lead form -> Email ---
 app.post("/api/lead", async (req, res) => {
+app.post("/api/request-audit", leadHandler);
   try {
     const { name, contact, message, hp, ts } = req.body || {};
 
