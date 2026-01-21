@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
 type Props = {
   open: boolean;
@@ -9,7 +9,9 @@ export function RequestAuditModal({ open, onClose }: Props) {
   const [name, setName] = useState("");
   const [contact, setContact] = useState(""); // телефон/telegram/email
   const [message, setMessage] = useState("");
-  const [honeypot, setHoneypot] = useState(""); // антиспам: должен быть пустым
+  const openedAtRef = useRef(Date.now());
+  const [consent, setConsent] = useState(false);
+  const [hp, setHp] = useState(""); // антиспам: должен быть пустым
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
     "idle"
   );
@@ -30,12 +32,20 @@ export function RequestAuditModal({ open, onClose }: Props) {
       setName("");
       setContact("");
       setMessage("");
-      setHoneypot("");
+      setConsent(false);
+      setHp("");
     }
   }, [open]);
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+
+    if (!consent) {
+      setStatus("error");
+      setErrorText("Consent required");
+      return;
+    }
+
     setStatus("sending");
     setErrorText("");
 
@@ -43,7 +53,14 @@ export function RequestAuditModal({ open, onClose }: Props) {
       const res = await fetch("/api/request-audit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, contact, message, hp: honeypot }),
+        body: JSON.stringify({
+          name,
+          contact,
+          message,
+          consent: true,
+          hp,
+          ts: openedAtRef.current,
+        }),
       });
 
       if (!res.ok) {
@@ -93,8 +110,9 @@ export function RequestAuditModal({ open, onClose }: Props) {
         <form className="mt-6 space-y-4" onSubmit={onSubmit}>
           {/* honeypot (скрытое поле) */}
           <input
-            value={honeypot}
-            onChange={(e) => setHoneypot(e.target.value)}
+            type="text"
+            value={hp}
+            onChange={(e) => setHp(e.target.value)}
             className="hidden"
             tabIndex={-1}
             autoComplete="off"
@@ -139,6 +157,27 @@ export function RequestAuditModal({ open, onClose }: Props) {
               placeholder="Что произошло? Какие документы есть? Какие сроки?"
             />
           </div>
+
+          <label className="flex items-start gap-3 text-sm text-white/70">
+            <input
+              type="checkbox"
+              className="mt-1 h-4 w-4 rounded border-white/20 bg-white/5 text-[#4B8BFF] focus:ring-[#4B8BFF]/40"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              required
+            />
+            <span>
+              Согласен на обработку персональных данных{" "}
+              <a
+                href="/docs/privacy"
+                className="text-white/80 underline decoration-white/30 underline-offset-4 hover:text-white"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Политика
+              </a>
+            </span>
+          </label>
 
           <div className="flex items-center gap-3">
             <button
