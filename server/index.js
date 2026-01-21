@@ -1,3 +1,4 @@
+// server/index.js
 import "dotenv/config";
 
 import express from "express";
@@ -5,7 +6,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
 
-// --- __dirname for ESM ---
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -14,30 +14,26 @@ process.on("uncaughtException", (e) => console.error("uncaughtException:", e));
 
 const app = express();
 
-// --- Config ---
-const PORT = Number(process.env.PORT || 3001);
+// важно: на платформах почти всегда ожидается 3000
+const PORT = Number(process.env.PORT || 3000);
 const DIST_PATH = path.join(__dirname, "..", "dist");
 
-// --- Helpers ---
+app.set("trust proxy", 1);
+app.use(express.json({ limit: "32kb" }));
+
 function mustEnv(name) {
   const v = process.env[name];
   if (!v) throw new Error(`Missing env: ${name}`);
   return v;
 }
-
 function isEmailLike(s) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
-
 function isPhoneLike(s) {
   return /^[+\d][\d\s()-]{6,}$/.test(s);
 }
 
-// --- Middlewares ---
-app.use(express.json({ limit: "32kb" }));
-
-// если фронт и API на одном домене — CORS не нужен.
-// если домены разные — укажи CORS_ORIGIN=https://www.letter-law.ru
+// CORS нужен только если фронт и API на разных доменах
 app.use((req, res, next) => {
   const origin = process.env.CORS_ORIGIN;
   if (origin) {
@@ -50,20 +46,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// --- Health ---
+// healthcheck — сюда же выставь “Путь проверки состояния” в панели
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
-// --- Lead handler (one source of truth) ---
 async function leadHandler(req, res) {
   try {
     const { name, contact, message, hp, ts } = req.body || {};
 
     // honeypot
-    if (typeof hp === "string" && hp.trim().length > 0) {
-      return res.json({ ok: true });
-    }
+    if (typeof hp === "string" && hp.trim().length > 0) return res.json({ ok: true });
 
-    // optional anti-bot
+    // очень простой антибот
     if (typeof ts === "number" && Date.now() - ts < 1200) {
       return res.status(429).json({ ok: false, error: "Too fast" });
     }
@@ -72,68 +65,39 @@ async function leadHandler(req, res) {
     const c = String(contact || "").trim();
     const m = String(message || "").trim();
 
-    if (n.length < 2 || n.length > 80) {
-      return res.status(400).json({ ok: false, error: "Некорректное имя" });
-    }
-    if (c.length < 3 || c.length > 120) {
-      return res.status(400).json({ ok: false, error: "Некорректный контакт" });
-    }
+    if (n.length < 2 || n.length > 80) return res.status(400).json({ ok: false, error: "Некорректное имя" });
+    if (c.length < 3 || c.length > 120) return res.status(400).json({ ok: false, error: "Некорректный контакт" });
 
     const contactOk =
-      isEmailLike(c) ||
-      isPhoneLike(c) ||
-      c.startsWith("@") ||
-      c.toLowerCase().includes("t.me/");
-
-    if (!contactOk) {
-      return res.status(400).json({ ok: false, error: "Укажите email, телефон или Telegram" });
-    }
+      isEmailLike(c) || isPhoneLike(c) || c.startsWith("@") || c.toLowerCase().includes("t.me/");
+    if (!contactOk) return res.status(400).json({ ok: false, error: "Укажите email, телефон или Telegram" });
 
     if (m.length < 10 || m.length > 4000) {
       return res.status(400).json({ ok: false, error: "Опишите ситуацию (10–4000 символов)" });
     }
 
+    const transporter = nodemailer.createTransport({
+      host: mustEnv("SMTP_HOST"),
+      port: Number(mustEnv("SMTP_PORT")),
+      secure: String(process.env.SMTP_SECURE ?? "true") === "true",
+      auth: { user: mustEnv("SMTP_USER"), pass: mustEnv("SMTP_PASS") },
+    });
+
     const to = mustEnv("LEADS_TO_EMAIL");
     const from = mustEnv("LEADS_FROM_EMAIL");
-
-    const transporter = nodemailer.createTransport({
-      host: mustEnv("SMTP_HOST"), // smtp.timeweb.ru
-      port: Number(mustEnv("SMTP_PORT")), // 465
-      secure: String(process.env.SMTP_SECURE || "true") === "true",
-      auth: {
-        user: mustEnv("SMTP_USER"),
-        pass: mustEnv("SMTP_PASS"),
-      },
-    });
 
     const ip =
       (req.headers["x-forwarded-for"]?.split?.(",")?.[0]?.trim?.() ||
         req.headers["x-real-ip"] ||
         req.socket?.remoteAddress ||
         "unknown");
-
     const ua = req.headers["user-agent"] || "unknown";
-
-    const subject = `Заявка с сайта: ${n} (${c})`;
-
-    const text = [
-      `Имя: ${n}`,
-      `Контакт: ${c}`,
-      ``,
-      `Суть вопроса:`,
-      m,
-      ``,
-      `---`,
-      `IP: ${ip}`,
-      `UA: ${ua}`,
-      `Time: ${new Date().toISOString()}`,
-    ].join("\n");
 
     await transporter.sendMail({
       from,
       to,
-      subject,
-      text,
+      subject: `Заявка с сайта: ${n} (${c})`,
+      text: [`Имя: ${n}`, `Контакт: ${c}`, "", "Суть вопроса:", m, "", "---", `IP: ${ip}`, `UA: ${ua}`, `Time: ${new Date().toISOString()}`].join("\n"),
       replyTo: isEmailLike(c) ? c : undefined,
     });
 
@@ -144,18 +108,24 @@ async function leadHandler(req, res) {
   }
 }
 
-// --- API routes (alias to match your production request) ---
 app.post("/api/lead", leadHandler);
 app.post("/api/request-audit", leadHandler);
 
-// --- Static frontend ---
+// раздача статики
 app.use(express.static(DIST_PATH, { index: false }));
 
-// --- SPA fallback (Express 5 safe, and does NOT catch /api/*) ---
+// SPA fallback (не ловит /api/*)
 app.get(/^(?!\/api\/).*/, (req, res) => {
   res.sendFile(path.join(DIST_PATH, "index.html"));
 });
 
-app.listen(PORT, "0.0.0.0", () => {
+const server = app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+function shutdown(signal) {
+  console.log(`Received ${signal}, shutting down...`);
+  server.close(() => process.exit(0));
+}
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
