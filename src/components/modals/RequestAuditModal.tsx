@@ -9,7 +9,6 @@ export function RequestAuditModal({ open, onClose }: Props) {
   const [name, setName] = useState("");
   const [contact, setContact] = useState(""); // телефон/telegram/email
   const [message, setMessage] = useState("");
-  const openedAtRef = useRef(Date.now());
   const [consent, setConsent] = useState(false);
   const [hp, setHp] = useState(""); // антиспам: должен быть пустым
   const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
@@ -59,7 +58,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
           message,
           consent: true,
           hp,
-          ts: openedAtRef.current,
+          ts: Date.now(),
         }),
       });
 
