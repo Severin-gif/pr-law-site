@@ -2,6 +2,7 @@
 import "dotenv/config";
 
 import express from "express";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import nodemailer from "nodemailer";
@@ -178,6 +179,15 @@ app.get(/^(?!\/api\/).*/, (req, res) => {
 
 // listen
 const server = app.listen(PORT, "0.0.0.0", () => {
+  const indexPath = path.join(DIST_PATH, "index.html");
+  console.log(
+    [
+      "Startup config:",
+      `PORT=${PORT}`,
+      `DIST_PATH=${DIST_PATH}`,
+      `index.html exists=${fs.existsSync(indexPath)}`,
+    ].join(" ")
+  );
   console.log(`✅ Server running on port ${PORT}`);
 });
 
