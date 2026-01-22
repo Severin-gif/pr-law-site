@@ -23,12 +23,6 @@ app.use(express.json({ limit: "32kb" }));
 // health (можно указать в Timeweb как "Путь проверки состояния")
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
-function mustEnv(name) {
-  const v = process.env[name];
-  if (!v) throw new Error(`Missing env: ${name}`);
-  return v;
-}
-
 function clean(v, maxLen) {
   if (typeof v !== "string") return "";
   const s = v.trim().replace(/\s+/g, " ");
@@ -72,18 +66,26 @@ function rateGuard(req, res) {
 }
 
 async function sendLeadEmail({ n, c, m, req }) {
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpPort = process.env.SMTP_PORT;
+  const smtpUser = process.env.SMTP_USER;
+  const smtpPass = process.env.SMTP_PASS;
+  const leadsTo = process.env.LEADS_TO_EMAIL;
+  const leadsFrom = process.env.LEADS_FROM_EMAIL;
+
+  if (!smtpHost || !smtpPort || !smtpUser || !smtpPass || !leadsTo || !leadsFrom) {
+    return { ok: false, error: "Email disabled" };
+  }
+
   const transporter = nodemailer.createTransport({
-    host: mustEnv("SMTP_HOST"),
-    port: Number(mustEnv("SMTP_PORT")),
+    host: smtpHost,
+    port: Number(smtpPort),
     secure: String(process.env.SMTP_SECURE ?? "true") === "true",
     auth: {
-      user: mustEnv("SMTP_USER"),
-      pass: mustEnv("SMTP_PASS"),
+      user: smtpUser,
+      pass: smtpPass,
     },
   });
-
-  const to = mustEnv("LEADS_TO_EMAIL");
-  const from = mustEnv("LEADS_FROM_EMAIL");
 
   const ip = getClientIp(req);
   const ua = req.headers["user-agent"] || "unknown";
@@ -105,12 +107,14 @@ async function sendLeadEmail({ n, c, m, req }) {
   ].join("\n");
 
   await transporter.sendMail({
-    from,
-    to,
+    from: leadsFrom,
+    to: leadsTo,
     subject,
     text,
     replyTo: isEmailLike(c) ? c : undefined,
   });
+
+  return { ok: true };
 }
 
 async function leadHandler(req, res) {
@@ -150,7 +154,10 @@ async function leadHandler(req, res) {
       return res.status(400).json({ ok: false, error: "Опишите ситуацию (10–4000 символов)" });
     }
 
-    await sendLeadEmail({ n, c, m, req });
+    const emailResult = await sendLeadEmail({ n, c, m, req });
+    if (!emailResult.ok) {
+      return res.json({ ok: false, error: emailResult.error });
+    }
 
     return res.json({ ok: true });
   } catch (e) {
@@ -176,7 +183,9 @@ const server = app.listen(PORT, "0.0.0.0", () => {
 
 function shutdown(signal) {
   console.log(`Received ${signal}, shutting down...`);
-  server.close(() => process.exit(0));
+  server.close(() => {
+    console.log("Server closed.");
+  });
 }
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
