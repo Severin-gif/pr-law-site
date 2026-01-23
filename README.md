@@ -71,3 +71,11 @@ export default defineConfig([
   },
 ])
 ```
+
+## Docker healthcheck
+
+After starting the container, verify the health endpoint locally:
+
+```bash
+curl -f http://localhost:3000/health
+```
