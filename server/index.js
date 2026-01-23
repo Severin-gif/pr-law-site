@@ -22,6 +22,7 @@ app.set("trust proxy", 1);
 app.use(express.json({ limit: "32kb" }));
 
 // health (можно указать в Timeweb как "Путь проверки состояния")
+app.get("/health", (req, res) => res.type("text").send("ok"));
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 function clean(v, maxLen) {
@@ -75,7 +76,7 @@ async function sendLeadEmail({ n, c, m, req }) {
   const leadsFrom = process.env.LEADS_FROM_EMAIL;
 
   if (!smtpHost || !smtpPort || !smtpUser || !smtpPass || !leadsTo || !leadsFrom) {
-    return { ok: false, error: "Email disabled" };
+    return { ok: false, error: "Email is not configured", status: 503 };
   }
 
   const transporter = nodemailer.createTransport({
@@ -157,7 +158,8 @@ async function leadHandler(req, res) {
 
     const emailResult = await sendLeadEmail({ n, c, m, req });
     if (!emailResult.ok) {
-      return res.json({ ok: false, error: emailResult.error });
+      const status = emailResult.status || 500;
+      return res.status(status).json({ ok: false, error: emailResult.error });
     }
 
     return res.json({ ok: true });
