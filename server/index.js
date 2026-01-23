@@ -176,7 +176,7 @@ app.post("/api/request-audit", leadHandler);
 
 // static + SPA fallback
 app.use(express.static(DIST_PATH, { index: false }));
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(DIST_PATH, "index.html"));
 });
 
