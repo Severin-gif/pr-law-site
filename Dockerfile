@@ -1,23 +1,14 @@
-# -------- builder --------
-FROM node:20-slim AS builder
+FROM node:20-alpine AS build
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package*.json ./
 RUN npm ci
 
 COPY . .
 RUN npm run build
 
-# -------- runner --------
-FROM node:20-slim AS runner
-WORKDIR /app
-ENV NODE_ENV=production
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
 
-COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
-
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/server ./server
-
-EXPOSE 3000
-CMD ["node", "server/index.js"]
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
