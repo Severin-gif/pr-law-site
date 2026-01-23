@@ -16,13 +16,14 @@ process.on("uncaughtException", (e) => console.error("uncaughtException:", e));
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+const HOST = "0.0.0.0";
 const DIST_PATH = path.join(__dirname, "..", "dist");
 
 app.set("trust proxy", 1);
 app.use(express.json({ limit: "32kb" }));
 
 // health (можно указать в Timeweb как "Путь проверки состояния")
-app.get("/health", (req, res) => res.type("text").send("ok"));
+app.get("/health", (req, res) => res.status(200).type("text").send("ok"));
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
 function clean(v, maxLen) {
@@ -180,7 +181,7 @@ app.get(/^(?!\/api\/).*/, (req, res) => {
 });
 
 // listen
-const server = app.listen(PORT, "0.0.0.0", () => {
+const server = app.listen(PORT, HOST, () => {
   const indexPath = path.join(DIST_PATH, "index.html");
   console.log(
     [
