@@ -20,6 +20,13 @@ const HOST = "0.0.0.0";
 const DIST_PATH = path.join(__dirname, "..", "dist");
 
 app.set("trust proxy", 1);
+app.use((req, res, next) => {
+  const host = req.headers.host?.toLowerCase();
+  if (host === "www.letter-law.ru" || host?.startsWith("www.letter-law.ru:")) {
+    return res.redirect(301, `https://letter-law.ru${req.originalUrl}`);
+  }
+  return next();
+});
 app.use(express.json({ limit: "32kb" }));
 
 // health (можно указать в Timeweb как "Путь проверки состояния")
