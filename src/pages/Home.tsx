@@ -9,6 +9,7 @@ import ServicesSection from "../components/sections/ServicesSection";
 import InterludeSection from "../components/InterludeSection";
 import TrustSection from "../components/trust/TrustSection";
 import FAQSection from "../components/sections/FAQSection";
+import EcosystemSection from "../sections/ecosystem/EcosystemSection";
 import ContactSection from "../components/sections/ContactSection";
 
 const Home: React.FC = () => {
@@ -30,6 +31,7 @@ const Home: React.FC = () => {
 
           {/* короткий FAQ (3–4 вопроса) */}
           <FAQSection />
+          <EcosystemSection />
 
           <ContactSection />
         </div>
