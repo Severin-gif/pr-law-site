@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import { Link } from "react-router-dom";
 
 type Props = {
@@ -9,10 +9,7 @@ type Props = {
 const RequestReviewModal: React.FC<Props> = ({ open, onClose }) => {
   const [submitted, setSubmitted] = useState(false);
 
-  const titleId = useMemo(
-    () => `request-review-title-${Math.random().toString(16).slice(2)}`,
-    []
-  );
+  const titleId = useId();
 
   useEffect(() => {
     if (!open) return;
@@ -30,9 +27,11 @@ const RequestReviewModal: React.FC<Props> = ({ open, onClose }) => {
     };
   }, [open, onClose]);
 
-  useEffect(() => {
-    if (!open) setSubmitted(false);
-  }, [open]);
+
+  const closeAndReset = () => {
+    setSubmitted(false);
+    onClose();
+  };
 
   if (!open) return null;
 
@@ -54,7 +53,7 @@ const RequestReviewModal: React.FC<Props> = ({ open, onClose }) => {
       {/* Backdrop */}
       <button
         type="button"
-        onClick={onClose}
+        onClick={closeAndReset}
         className="absolute inset-0 cursor-default bg-black/60 backdrop-blur-sm"
         aria-label="Закрыть"
       />
@@ -78,7 +77,7 @@ const RequestReviewModal: React.FC<Props> = ({ open, onClose }) => {
 
             <button
               type="button"
-              onClick={onClose}
+              onClick={closeAndReset}
               className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/10 hover:text-white"
               aria-label="Закрыть окно"
               title="Закрыть"
@@ -101,14 +100,14 @@ const RequestReviewModal: React.FC<Props> = ({ open, onClose }) => {
                 <div className="mt-5 flex flex-wrap gap-3">
                   <button
                     type="button"
-                    onClick={onClose}
+                    onClick={closeAndReset}
                     className="inline-flex items-center justify-center rounded-xl bg-[#8B1E2D] px-5 py-3 text-sm font-medium text-white shadow-[0_18px_52px_rgba(139,30,45,0.35)] transition hover:bg-[#A32537]"
                   >
                     Закрыть
                   </button>
                   <a
                     href="#contact"
-                    onClick={onClose}
+                    onClick={closeAndReset}
                     className="inline-flex items-center justify-center rounded-xl border border-white/12 bg-white/5 px-5 py-3 text-sm font-medium text-white/90 transition hover:bg-white/10"
                   >
                     Перейти к контактам
@@ -167,7 +166,7 @@ const RequestReviewModal: React.FC<Props> = ({ open, onClose }) => {
                   Нажимая «Отправить заявку», вы соглашаетесь с{" "}
                   <Link
                     to="/privacy"
-                    onClick={onClose}
+                    onClick={closeAndReset}
                     className="text-white/80 underline decoration-white/30 underline-offset-4 hover:text-white"
                   >
                     политикой обработки персональных данных

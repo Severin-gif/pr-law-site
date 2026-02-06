@@ -9,7 +9,7 @@ import ServicesSection from "../components/sections/ServicesSection";
 import InterludeSection from "../components/InterludeSection";
 import TrustSection from "../components/trust/TrustSection";
 import FAQSection from "../components/sections/FAQSection";
-import EcosystemSection from "../sections/ecosystem/EcosystemSection";
+import { EcosystemSection } from "../components/ecosystem";
 import ContactSection from "../components/sections/ContactSection";
 
 const Home: React.FC = () => {
