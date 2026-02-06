@@ -28,10 +28,11 @@ const Home: React.FC = () => {
           <InterludeSection />
 
           <TrustSection />
+          <EcosystemSection />
 
           {/* короткий FAQ (3–4 вопроса) */}
           <FAQSection />
-          <EcosystemSection />
+          
 
           <ContactSection />
         </div>

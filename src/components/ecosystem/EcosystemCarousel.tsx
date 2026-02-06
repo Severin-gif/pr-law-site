@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 type Slide = {
   icon: string;
@@ -71,7 +71,7 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
-export default function EcosystemCarousel() {
+export default function EcosystemSection() {
   const isMobile = useMediaQuery("(max-width: 820px)");
   const perView = isMobile ? 1 : 2;
 
@@ -82,51 +82,72 @@ export default function EcosystemCarousel() {
 
   const [page, setPage] = useState(0);
 
-  const step = () => viewportRef.current?.clientWidth ?? 0;
+  const getStep = () => viewportRef.current?.clientWidth ?? 0;
 
   const goTo = (p: number) => {
-    const max = pages - 1;
-    const next = clamp(p, 0, max);
-
+    const next = clamp(p, 0, pages - 1);
     setPage(next);
-    const x = next * step();
+    const x = next * getStep();
     trackRef.current?.scrollTo({ left: x, behavior: "smooth" });
   };
 
-  const updatePageFromScroll = () => {
-    const s = step();
-    const el = trackRef.current;
-    if (!el || !s) return;
-    const current = Math.round(el.scrollLeft / s);
-    setPage(clamp(current, 0, pages - 1));
-  };
-
+  // синхронизация точки при ручном скролле
   useEffect(() => {
-    // при смене perView пере-выравниваемся
+    const el = trackRef.current;
+    if (!el) return;
+
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const step = getStep();
+        if (!step) return;
+        const p = Math.round(el.scrollLeft / step);
+        setPage(clamp(p, 0, pages - 1));
+      });
+    };
+
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [pages]);
+
+  // при смене perView (desktop/mobile) — выравниваем на текущую страницу
+  useEffect(() => {
     goTo(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [perView]);
 
+  const prevDisabled = page <= 0;
+  const nextDisabled = page >= pages - 1;
+
   return (
-    <section className="py-14">
+    <section id="ecosystem" className="py-14">
+      {/* Head */}
       <div className="mb-5">
-        <h2 className="text-2xl md:text-3xl leading-tight font-semibold">
+        <h2 className="text-2xl md:text-3xl leading-tight font-semibold text-white">
           Экосистема специалистов
         </h2>
-        <p className="mt-2 max-w-3xl text-black/70">
+        <p className="mt-2 max-w-3xl text-white/70">
           Для решения сложных задач без передачи дела и ответственности
         </p>
       </div>
 
+      {/* Carousel */}
       <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
         {/* Prev */}
         <button
           type="button"
           aria-label="Назад"
           onClick={() => goTo(page - 1)}
-          disabled={page <= 0}
-          className="h-10 w-10 rounded-xl border border-black/15 bg-white/90 text-xl leading-none
-                     disabled:opacity-40 disabled:cursor-not-allowed"
+          disabled={prevDisabled}
+          className={[
+            "h-10 w-10 rounded-xl border border-white/15 bg-white/90",
+            "text-xl leading-none text-black",
+            "disabled:opacity-40 disabled:cursor-not-allowed",
+          ].join(" ")}
         >
           ‹
         </button>
@@ -136,18 +157,19 @@ export default function EcosystemCarousel() {
           {/* Track */}
           <div
             ref={trackRef}
-            onScroll={updatePageFromScroll}
-            className="flex gap-3 p-1.5 overflow-x-auto scroll-smooth [scrollbar-width:none]"
-            style={{
-              scrollSnapType: "x mandatory",
-            }}
+            className={[
+              "flex gap-3 p-1.5 overflow-x-auto scroll-smooth",
+              "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden", // firefox + webkit
+            ].join(" ")}
+            style={{ scrollSnapType: "x mandatory" }}
+            aria-label="Карусель: экосистема специалистов"
           >
             {SLIDES.map((s, idx) => (
               <article
                 key={idx}
                 className={[
-                  "shrink-0 rounded-2xl border border-black/10 bg-white/90 p-5",
-                  "min-h-[220px]",
+                  "shrink-0 rounded-2xl border border-black/10 bg-white p-5",
+                  "min-h-[220px] text-black", // <- жёстко фиксируем контраст
                   isMobile ? "basis-full" : "basis-[calc(50%-6px)]",
                 ].join(" ")}
                 style={{ scrollSnapAlign: "start" }}
@@ -159,13 +181,11 @@ export default function EcosystemCarousel() {
                   {s.icon}
                 </div>
 
-                <h3 className="text-[18px] leading-snug font-semibold">
+                <h3 className="text-[18px] leading-snug font-semibold text-black">
                   {s.title}
                 </h3>
 
-                <p className="mt-2 text-black/80 leading-relaxed">
-                  {s.text}
-                </p>
+                <p className="mt-2 text-black/80 leading-relaxed">{s.text}</p>
 
                 {s.meta ? (
                   <p className="mt-3 text-[13px] text-black/60">{s.meta}</p>
@@ -180,9 +200,12 @@ export default function EcosystemCarousel() {
           type="button"
           aria-label="Вперёд"
           onClick={() => goTo(page + 1)}
-          disabled={page >= pages - 1}
-          className="h-10 w-10 rounded-xl border border-black/15 bg-white/90 text-xl leading-none
-                     disabled:opacity-40 disabled:cursor-not-allowed"
+          disabled={nextDisabled}
+          className={[
+            "h-10 w-10 rounded-xl border border-white/15 bg-white/90",
+            "text-xl leading-none text-black",
+            "disabled:opacity-40 disabled:cursor-not-allowed",
+          ].join(" ")}
         >
           ›
         </button>
@@ -199,8 +222,10 @@ export default function EcosystemCarousel() {
                 aria-selected={active}
                 onClick={() => goTo(i)}
                 className={[
-                  "h-2 w-2 rounded-full border border-black/30",
-                  active ? "bg-black/80" : "bg-transparent",
+                  "h-2 w-2 rounded-full border",
+                  active
+                    ? "bg-white/80 border-white/60"
+                    : "bg-transparent border-white/30 hover:border-white/60",
                 ].join(" ")}
               />
             );
@@ -208,15 +233,16 @@ export default function EcosystemCarousel() {
         </div>
       </div>
 
+      {/* Note */}
       <div className="mt-5 max-w-4xl">
-        <p className="text-black/85">
-          Я остаюсь вашим представителем и координатором дела. Специалисты усиливают позицию клиента,
-          но стратегия и ответственность всегда остаются за мной.
+        <p className="text-white/80">
+          Я остаюсь вашим представителем и координатором дела. Специалисты усиливают позицию клиента, но стратегия и
+          ответственность всегда остаются за мной.
         </p>
 
         <a
           href="/ecosystem"
-          className="inline-block mt-3 border-b border-black/25 hover:border-black/60 transition-colors"
+          className="inline-block mt-3 border-b border-white/30 hover:border-white/70 text-white/80 hover:text-white transition-colors"
         >
           Как выстраивается работа →
         </a>
