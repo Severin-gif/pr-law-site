@@ -165,32 +165,40 @@ export default function EcosystemSection() {
             aria-label="Карусель: экосистема специалистов"
           >
             {SLIDES.map((s, idx) => (
-              <article
-                key={idx}
-                className={[
-                  "shrink-0 rounded-2xl border border-black/10 bg-white p-5",
-                  "min-h-[220px] text-black", // <- жёстко фиксируем контраст
-                  isMobile ? "basis-full" : "basis-[calc(50%-6px)]",
-                ].join(" ")}
-                style={{ scrollSnapAlign: "start" }}
-              >
-                <div
-                  aria-hidden="true"
-                  className="h-10 w-10 rounded-xl border border-black/12 grid place-items-center mb-3 text-black/80"
-                >
-                  {s.icon}
-                </div>
+             <article
+  key={idx}
+  className={[
+    "shrink-0 rounded-xl border border-black/10 bg-white",
+    "px-6 py-5 md:px-7 md:py-6",
+    "text-black shadow-[0_10px_30px_rgba(0,0,0,0.18)]",
+    isMobile ? "basis-full" : "basis-[calc(50%-6px)]",
+  ].join(" ")}
+  style={{ scrollSnapAlign: "start" }}
+>
+  <div className="flex items-center gap-3 mb-4">
+    <div
+      aria-hidden="true"
+      className="h-9 w-9 rounded-lg border border-black/12 grid place-items-center text-black/70"
+    >
+      {s.icon}
+    </div>
 
-                <h3 className="text-[18px] leading-snug font-semibold text-black">
-                  {s.title}
-                </h3>
+    <h3 className="text-[18px] md:text-[19px] leading-snug font-semibold text-black">
+      {s.title}
+    </h3>
+  </div>
 
-                <p className="mt-2 text-black/80 leading-relaxed">{s.text}</p>
+  <p className="text-[15px] md:text-[16px] leading-relaxed text-black/80 max-w-[62ch]">
+    {s.text}
+  </p>
 
-                {s.meta ? (
-                  <p className="mt-3 text-[13px] text-black/60">{s.meta}</p>
-                ) : null}
-              </article>
+  {s.meta ? (
+    <p className="mt-4 text-[13px] text-black/55">
+      {s.meta}
+    </p>
+  ) : null}
+</article>
+
             ))}
           </div>
         </div>
