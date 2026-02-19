@@ -12,10 +12,10 @@ import PartnersPage from "./components/partners";
 
 const App = () => {
   return (
-    <>
+    <div className="min-h-screen flex flex-col bg-[#0B0D10] text-[#EDEAE2]">
       <Header />
 
-      <main className="min-h-[calc(100vh-160px)]">
+      <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
@@ -27,7 +27,7 @@ const App = () => {
       </main>
 
       <Footer />
-    </>
+    </div>
   );
 };
 
