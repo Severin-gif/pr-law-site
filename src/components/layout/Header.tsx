@@ -9,7 +9,7 @@ const Header: React.FC = () => {
           МИРОНОВ ВЯЧЕСЛАВ
         </div>
 
-        <nav className="hidden gap-6 text-sm text-[#A8ADB4] md:flex">
+        <nav className=" gap-6 text-sm text-[#A8ADB4] md:flex">
           <a href="#about" className="hover:text-[#EDEAE2] transition">
             О себе
             </a>
