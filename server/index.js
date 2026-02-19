@@ -32,6 +32,7 @@ app.use(express.json({ limit: "32kb" }));
 // health (можно указать в Timeweb как "Путь проверки состояния")
 app.get("/health", (req, res) => res.status(200).type("text").send("ok"));
 app.get("/api/health", (req, res) => res.json({ ok: true }));
+app.get("/api/__ping", (req, res) => res.json({ ok: true, source: "express" }));
 
 function clean(v, maxLen) {
   if (typeof v !== "string") return "";
