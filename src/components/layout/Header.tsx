@@ -5,8 +5,16 @@ const Header: React.FC = () => {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0B0D10]/70 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <div className="text-sm uppercase tracking-[0.28em] text-[#A8ADB4]">
-          МИРОНОВ ВЯЧЕСЛАВ
+       <div className="flex max-w-6xl items-center justify-between px-4 py-4">
+
+      <a
+    href="https://letter-law.ru"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-sm uppercase tracking-[0.28em] text-[#A8ADB4] hover:opacity-80 transition"
+  >
+    Миронов Вячеслав Владимирович
+  </a>
         </div>
 
         <nav className="hidden gap-6 text-sm text-[#A8ADB4] md:flex">
