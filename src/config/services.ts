@@ -1,7 +1,7 @@
 export type ServiceItem = {
   id: string;
   title: string;
-  bullets: [string, string, string];
+  items: [string, string, string];
   result: string;
   ctaLabel: string;
   ctaHref: string;
@@ -11,7 +11,7 @@ export const SERVICES: ServiceItem[] = [
   {
     id: "arbitration-bankruptcy",
     title: "Арбитраж и банкротство",
-    bullets: [
+    items: [
       "Долг, убытки и срыв обязательств.",
       "Давление контрагентов и риск арестов.",
       "Сценарий защиты до суда и в процессе.",
@@ -23,7 +23,7 @@ export const SERVICES: ServiceItem[] = [
   {
     id: "corporate-disputes",
     title: "Корпоративные конфликты",
-    bullets: [
+    items: [
       "Споры между участниками и директором.",
       "Блокировки решений, счетов и управления.",
       "Выход участника и перераспределение долей.",
@@ -35,7 +35,7 @@ export const SERVICES: ServiceItem[] = [
   {
     id: "asset-protection",
     title: "Защита активов и рисков",
-    bullets: [
+    items: [
       "Активы под угрозой взыскания.",
       "Претензии, проверки и регуляторные риски.",
       "Проверка условий сделки до подписания.",

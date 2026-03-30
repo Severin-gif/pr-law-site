@@ -7,32 +7,28 @@ type ServiceCardProps = {
 const ServiceCard = ({ service }: ServiceCardProps) => {
   return (
     <article
-      className="group flex h-full min-h-[360px] flex-col rounded-3xl bg-white/[0.03] p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] ring-1 ring-white/10 transition-colors duration-200 hover:bg-white/[0.05] hover:ring-white/20"
+      className="flex h-full min-h-[340px] flex-col rounded-2xl bg-white/[0.03] p-6 ring-1 ring-white/10 sm:p-7"
       aria-label={service.title}
     >
-      <h3 className="text-[24px] font-semibold leading-tight tracking-tight text-white md:text-[26px]">
+      <h3 className="text-[22px] font-semibold leading-tight tracking-tight text-white sm:text-[24px]">
         {service.title}
       </h3>
 
-      <ul className="mt-6 space-y-3 text-[15px] leading-relaxed text-white/72">
-        {service.bullets.map((point) => (
-          <li key={point} className="flex gap-3">
-            <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-white/40" />
-            <span>{point}</span>
+      <ul className="mt-5 space-y-3 text-[15px] leading-relaxed text-white/75">
+        {service.items.map((item) => (
+          <li key={item} className="flex gap-3">
+            <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-white/45" />
+            <span>{item}</span>
           </li>
         ))}
       </ul>
 
-      <div className="mt-7 rounded-2xl bg-black/30 px-4 py-4 ring-1 ring-white/10">
-        <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-white/45">
-          Результат
-        </p>
-        <p className="mt-2 text-[15px] leading-relaxed text-white/88">{service.result}</p>
-      </div>
+      <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.14em] text-white/45">Результат</p>
+      <p className="mt-2 text-[15px] leading-relaxed text-white/88">{service.result}</p>
 
       <a
         href={service.ctaHref}
-        className="mt-auto inline-flex pt-7 text-sm font-medium text-white/85 underline decoration-white/30 underline-offset-4 transition-colors duration-200 hover:text-white hover:decoration-white"
+        className="mt-auto inline-flex pt-7 text-sm font-medium text-white/90 transition-colors duration-150 hover:text-white"
       >
         {service.ctaLabel}
       </a>
