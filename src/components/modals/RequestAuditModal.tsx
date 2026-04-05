@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 
 type Props = {
   open: boolean;
@@ -167,14 +168,12 @@ export function RequestAuditModal({ open, onClose }: Props) {
             />
             <span>
               Согласен на обработку персональных данных{" "}
-              <a
-                href="/docs/privacy"
+              <Link
+                to="/privacy"
                 className="text-white/80 underline decoration-white/30 underline-offset-4 hover:text-white"
-                target="_blank"
-                rel="noreferrer"
               >
                 Политика
-              </a>
+              </Link>
             </span>
           </label>
 
