@@ -1,80 +1,47 @@
-# React + TypeScript + Vite
+# pr-law-site
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Сайт работает как **SPA (Vite + React)** с единым backend-слоем на **Express**.
 
-Currently, two official plugins are available:
+## Целевая архитектура (каноничная)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Frontend: `src/*` (React + Vite).
+- Backend runtime: `server/index.js` (Express).
+- Прод-выдача: Express раздает `dist/` и обслуживает API.
 
-## React Compiler
+> Канонический серверный entrypoint: `server/index.js`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Runtime API (единый набор)
 
-## Expanding the ESLint configuration
+Express обслуживает следующие endpoint'ы:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- `GET /health` — healthcheck.
+- `GET /api/health` — API healthcheck.
+- `POST /api/request-audit` — основной endpoint обработки формы.
+- `POST /api/lead` — алиас на тот же обработчик (совместимость).
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Обработка форм
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+В проекте используется **один способ** обработки форм: фронтенд отправляет заявку на Express endpoint `POST /api/request-audit`.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Архив legacy-роутов (не участвуют в runtime)
+
+Ранее в репозитории были Next-style route handlers. Они изолированы в архив и **не подключаются в текущем runtime**:
+
+- `legacy/next-routes/app/api/request-audit/route.ts`
+- `legacy/next-routes/app/api/__ping/route.ts`
+- `legacy/next-routes/server/app/api/lead/route.tsx`
+
+Использовать эти файлы в текущей архитектуре не нужно.
+
+## Локальный запуск
+
+```bash
+npm install
+npm run build
+npm run start
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-## Docker healthcheck
-
-After starting the container, verify the health endpoint locally:
+После запуска:
 
 ```bash
 curl -f http://localhost:3000/health
