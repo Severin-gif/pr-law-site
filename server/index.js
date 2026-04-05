@@ -95,7 +95,15 @@ async function leadHandler(req, res) {
 app.post("/api/request-audit", leadHandler);
 app.post("/api/lead", leadHandler);
 
+app.get("/api", (req, res) => {
+  return res.status(200).json({ ok: true, service: "express" });
+});
+
 app.use(express.static(DIST_PATH, { index: false }));
+
+app.use("/api", (req, res) => {
+  return res.status(404).json({ ok: false, error: "Not found" });
+});
 
 app.use((req, res) => {
   const indexPath = path.join(DIST_PATH, "index.html");
