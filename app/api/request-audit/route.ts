@@ -1,4 +1,3 @@
-import nodemailer from "nodemailer";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
@@ -8,7 +7,6 @@ type RequestAuditPayload = {
   contact?: unknown;
   message?: unknown;
   hp?: unknown;
-  ts?: unknown;
 };
 
 function asTrimmedString(value: unknown): string {
@@ -16,44 +14,27 @@ function asTrimmedString(value: unknown): string {
 }
 
 export async function POST(req: Request) {
-  const { name, contact, message, hp }: RequestAuditPayload = await req.json();
-
-  if (asTrimmedString(hp).length > 0) {
-    return NextResponse.json({ ok: true });
-  }
-
-  const cleanName = asTrimmedString(name);
-  const cleanContact = asTrimmedString(contact);
-  const cleanMessage = asTrimmedString(message);
-
-  if (!cleanName || !cleanContact || !cleanMessage) {
-    return NextResponse.json(
-      { ok: false, error: "name, contact и message обязательны" },
-      { status: 400 }
-    );
-  }
-
-  const transporter = nodemailer.createTransport({
-    host: "smtp.timeweb.ru",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.MAIL_USER,
-      pass: process.env.MAIL_PASS,
-    },
-  });
-
   try {
-    await transporter.sendMail({
-      from: process.env.MAIL_USER,
-      to: "lead@letter-law.ru",
-      subject: "Новая заявка с letter-law.ru",
-      text: [`Имя: ${cleanName}`, `Контакт: ${cleanContact}`, "", cleanMessage].join("\n"),
+    const { name, contact, message, hp }: RequestAuditPayload = await req.json();
+
+    if (asTrimmedString(hp).length > 0) {
+      return NextResponse.json({ ok: true, skipped: "honeypot" }, { status: 200 });
+    }
+
+    const cleanName = asTrimmedString(name);
+    const cleanContact = asTrimmedString(contact);
+    const cleanMessage = asTrimmedString(message);
+
+    console.log("[next:request-audit] incoming", {
+      name: cleanName,
+      contact: cleanContact,
+      messageLength: cleanMessage.length,
     });
 
-    return NextResponse.json({ ok: true });
+    // Temporary stabilization mode: external integrations are disabled.
+    return NextResponse.json({ ok: true, integrations: "disabled" }, { status: 200 });
   } catch (error) {
-    console.error("REQUEST_AUDIT_SEND_ERROR", error);
-    return NextResponse.json({ ok: false, error: "Не удалось отправить письмо" }, { status: 500 });
+    console.error("[next:request-audit] error", error);
+    return NextResponse.json({ ok: false, handled: true }, { status: 200 });
   }
 }
