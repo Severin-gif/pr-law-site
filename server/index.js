@@ -97,6 +97,10 @@ app.post("/api/lead", leadHandler);
 
 app.use(express.static(DIST_PATH, { index: false }));
 
+app.use("/api", (req, res) => {
+  return res.status(404).json({ ok: false, error: "Not found" });
+});
+
 app.use((req, res) => {
   const indexPath = path.join(DIST_PATH, "index.html");
   if (!fs.existsSync(indexPath)) {
