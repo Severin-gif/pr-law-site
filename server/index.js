@@ -54,6 +54,10 @@ app.get("/api/health", (req, res) => {
   return res.status(200).json({ ok: true, service: "express", uptimeSec: process.uptime() });
 });
 
+app.get("/", (req, res) => {
+  return res.status(200).type("text").send("OK");
+});
+
 function clean(value, maxLen) {
   if (typeof value !== "string") return "";
   const normalized = value.trim().replace(/\s+/g, " ");
