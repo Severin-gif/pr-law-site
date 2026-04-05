@@ -57,9 +57,24 @@ app.get("/health", (req, res) => {
 });
 
 // 3. API
-app.post("/api/request-audit", ...)
-app.post("/api/lead", ...)
+app.post("/api/request-audit", (req, res) => {
+  try {
+    const { name, contact, message, consent, hp } = req.body || {};
 
+    if (hp) {
+      return res.json({ ok: true });
+    }
+
+    if (!name || !contact || !message || consent !== true) {
+      return res.status(400).json({ ok: false, error: "invalid_payload" });
+    }
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ ok: false, error: "internal_error" });
+  }
+});
 // 4. ТОЛЬКО ПОСЛЕ ЭТОГО
 app.use(express.static(DIST_PATH));
 
