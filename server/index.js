@@ -97,7 +97,7 @@ app.post("/api/lead", leadHandler);
 
 app.use(express.static(DIST_PATH, { index: false }));
 
-app.get("*", (req, res) => {
+app.use((req, res) => {
   const indexPath = path.join(DIST_PATH, "index.html");
   if (!fs.existsSync(indexPath)) {
     return res.status(500).type("text").send("dist/index.html not found (run build)");
