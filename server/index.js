@@ -46,18 +46,27 @@ app.use((req, res, next) => {
   return next();
 });
 
-app.get("/health", (req, res) => {
-  return res.status(200).json({ ok: true, service: "express", uptimeSec: process.uptime() });
-});
-
-app.get("/api/health", (req, res) => {
-  return res.status(200).json({ ok: true, service: "express", uptimeSec: process.uptime() });
-});
-
+// 1. САМЫЙ ПЕРВЫЙ
 app.get("/", (req, res) => {
   return res.status(200).type("text").send("OK");
 });
 
+// 2. health
+app.get("/health", (req, res) => {
+  return res.status(200).json({ ok: true });
+});
+
+// 3. API
+app.post("/api/request-audit", ...)
+app.post("/api/lead", ...)
+
+// 4. ТОЛЬКО ПОСЛЕ ЭТОГО
+app.use(express.static(DIST_PATH));
+
+// 5. fallback
+app.use((req, res) => {
+  res.sendFile(path.join(DIST_PATH, "index.html"));
+});
 function clean(value, maxLen) {
   if (typeof value !== "string") return "";
   const normalized = value.trim().replace(/\s+/g, " ");
