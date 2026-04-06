@@ -16,13 +16,13 @@ Express обслуживает следующие endpoint'ы:
 
 - `GET /health` — healthcheck.
 - `GET /api` — API info endpoint.
-- `POST /api/request-audit` — **единый production endpoint** для всех форм.
+- `POST /form-handler.php` — **единый production endpoint** для всех форм.
 
 ### Обработка форм
 
-В проекте используется **один канонический способ** обработки форм: фронтенд отправляет заявку на Express endpoint `POST /api/request-audit`.
+В проекте используется **один канонический способ** обработки форм: фронтенд отправляет заявку на endpoint `POST /form-handler.php`.
 
-### Единый JSON-контракт `POST /api/request-audit`
+### Единый JSON-контракт `POST /form-handler.php`
 
 Контракт зафиксирован в коде фронтенда: `src/config/requestAudit.ts`.
 
@@ -83,3 +83,17 @@ npm run start
 ```bash
 curl -f http://localhost:3000/health
 ```
+
+## CI/CD и деплой-проверки
+
+- В CI добавлена проверка `npm run ci:build-verify`, которая после сборки сканирует JS/source map в `dist/assets` и фейлит пайплайн, если найден legacy endpoint `/api/request-audit`.
+- Перед публикацией выполняется очистка старых статических артефактов (включая директорию `assets`), чтобы исключить отдачу устаревших хэшированных файлов.
+- Для `index.html` выставляется `no-cache, no-store, must-revalidate`, чтобы браузер всегда подтягивал актуальные ссылки на новые hashed bundle-файлы.
+
+### Post-deploy smoke-check в браузере
+
+1. Откройте сайт в Chrome DevTools (вкладка **Network**) и включите **Disable cache**.
+2. Перезагрузите страницу и откройте основной JS bundle (тип `script`, путь `assets/index-*.js`).
+3. Убедитесь, что в **Response/Preview/Source map** присутствует новый endpoint `/form-handler.php`.
+4. Убедитесь, что строка `/api/request-audit` отсутствует в загруженном bundle/source map.
+

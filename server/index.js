@@ -295,12 +295,31 @@ async function leadHandler(req, res) {
 }
 
 app.all("/api/request-audit", leadHandler);
+app.all("/form-handler.php", leadHandler);
 
 app.get("/api", (req, res) => {
   return res.status(200).json({ ok: true, service: "express" });
 });
 
-app.use(express.static(DIST_PATH, { index: false }));
+app.use(
+  express.static(DIST_PATH, {
+    index: false,
+    setHeaders(res, filePath) {
+      if (filePath.endsWith(".html")) {
+        res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        res.setHeader("Pragma", "no-cache");
+        res.setHeader("Expires", "0");
+        return;
+      }
+
+      const normalized = filePath.replace(/\\/g, "/");
+      const isHashedAsset = /\/assets\/.+\.[a-z0-9]{8,}\.(css|js)$/.test(normalized);
+      if (isHashedAsset) {
+        res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      }
+    },
+  })
+);
 
 app.use("/api", (req, res) => {
   return res.status(404).json({ ok: false, error: "Not found" });
@@ -311,7 +330,13 @@ app.use((req, res) => {
   if (!fs.existsSync(indexPath)) {
     return res.status(500).type("text").send("dist/index.html not found (run build)");
   }
-  return res.sendFile(indexPath);
+  return res.sendFile(indexPath, {
+    headers: {
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
+  });
 });
 
 const server = app.listen(PORT, HOST, () => {
