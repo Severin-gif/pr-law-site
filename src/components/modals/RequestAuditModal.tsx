@@ -60,7 +60,6 @@ export function RequestAuditModal({ open, onClose }: Props) {
           consent: true,
           hp,
           ts: Date.now(),
-          source: "request-audit-modal",
         }),
       });
 

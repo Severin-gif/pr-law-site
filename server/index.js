@@ -1,5 +1,6 @@
 import "dotenv/config";
 
+import crypto from "crypto";
 import express from "express";
 import fs from "fs";
 import nodemailer from "nodemailer";
@@ -41,8 +42,15 @@ const leadTransporter = nodemailer.createTransport({
 });
 
 const leadRateLimit = new Map();
+const leadDuplicateGuard = new Map();
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX_REQUESTS = 5;
+const DUPLICATE_TTL_MS = 90 * 1000;
+const MIN_MESSAGE_LEN = 10;
+const MIN_NAME_LEN = 2;
+const MIN_CONTACT_LEN = 5;
+const MIN_SUBMIT_DELAY_MS = 1200;
+const LEAD_ALLOWED_FIELDS = new Set(["name", "contact", "message", "consent", "hp", "ts"]);
 
 app.set("trust proxy", 1);
 app.use(express.json({ limit: "32kb" }));
@@ -109,13 +117,12 @@ function clean(value, maxLen) {
 function parseTimestamp(tsRaw) {
   const num = Number(tsRaw);
   if (!Number.isFinite(num) || num <= 0) {
-    return new Date().toISOString();
+    return null;
   }
-  const date = new Date(num);
-  if (Number.isNaN(date.getTime())) {
-    return new Date().toISOString();
+  if (num > Date.now() + 10 * 1000) {
+    return null;
   }
-  return date.toISOString();
+  return num;
 }
 
 function isSuspiciousPayload(name, contact, message) {
@@ -138,6 +145,41 @@ function isRateLimited(ip, nowMs) {
   return false;
 }
 
+function hashPayload(name, contact, message) {
+  return crypto.createHash("sha256").update(`${name}\n${contact}\n${message}`).digest("hex");
+}
+
+function isDuplicateLead(ip, payloadHash, nowMs) {
+  for (const [key, ts] of leadDuplicateGuard.entries()) {
+    if (nowMs - ts > DUPLICATE_TTL_MS) {
+      leadDuplicateGuard.delete(key);
+    }
+  }
+
+  const dedupeKey = `${ip}:${payloadHash}`;
+  const previous = leadDuplicateGuard.get(dedupeKey);
+  if (typeof previous === "number" && nowMs - previous <= DUPLICATE_TTL_MS) {
+    leadDuplicateGuard.set(dedupeKey, nowMs);
+    return true;
+  }
+
+  leadDuplicateGuard.set(dedupeKey, nowMs);
+  return false;
+}
+
+function logLeadReject(reason, req, details = {}) {
+  console.warn("[lead] rejected", {
+    reason,
+    ip: clean(req.ip, 128) || "unknown",
+    path: req.originalUrl,
+    ...details,
+  });
+}
+
+function isPlainObject(value) {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 function leadEmailText({ source, name, contact, message, ip, userAgent, timestamp }) {
   return [
     "Новая заявка с формы сайта.",
@@ -154,34 +196,73 @@ function leadEmailText({ source, name, contact, message, ip, userAgent, timestam
 
 async function leadHandler(req, res) {
   if (req.method !== "POST") {
+    logLeadReject("validation_failed", req, { code: "method_not_allowed" });
     return res.status(405).json({ ok: false, error: "method_not_allowed" });
   }
 
   try {
-    const body = req.body || {};
+    if (!req.is("application/json")) {
+      logLeadReject("validation_failed", req, { code: "unsupported_media_type" });
+      return res.status(415).json({ ok: false, error: "unsupported_media_type" });
+    }
+
+    const body = req.body;
+    if (!isPlainObject(body)) {
+      logLeadReject("validation_failed", req, { code: "invalid_body_type" });
+      return res.status(400).json({ ok: false, error: "invalid_payload" });
+    }
+
+    const fields = Object.keys(body);
+    const hasUnexpectedField = fields.some((field) => !LEAD_ALLOWED_FIELDS.has(field));
+    const hasMissingField = [...LEAD_ALLOWED_FIELDS].some((field) => !(field in body));
+    if (hasUnexpectedField || hasMissingField) {
+      logLeadReject("validation_failed", req, { code: "invalid_schema", fieldCount: fields.length });
+      return res.status(400).json({ ok: false, error: "invalid_payload" });
+    }
+
     const name = clean(body.name, 80);
     const contact = clean(body.contact, 120);
     const message = clean(body.message, 4000);
-    const source = clean(body.source, 120) || clean(req.headers.referer, 200) || "unknown";
+    const source = clean(req.headers.referer, 200) || "unknown";
     const hp = clean(body.hp, 128);
     const consent = Boolean(body.consent);
     const ip = clean(req.ip, 128) || "unknown";
     const userAgent = clean(req.headers["user-agent"], 500) || "unknown";
-    const timestamp = parseTimestamp(body.ts);
+    const tsMs = parseTimestamp(body.ts);
+    const nowMs = Date.now();
 
     if (hp.length > 0) {
-      return res.status(429).json({ ok: false, error: "anti_spam" });
+      logLeadReject("honeypot", req);
+      return res.status(200).json({ ok: true });
     }
 
     if (!name || !contact || !message || !consent) {
+      logLeadReject("validation_failed", req, { code: "required_fields" });
       return res.status(400).json({ ok: false, error: "invalid_payload" });
     }
 
+    if (name.length < MIN_NAME_LEN || contact.length < MIN_CONTACT_LEN || message.length < MIN_MESSAGE_LEN) {
+      logLeadReject("validation_failed", req, { code: "too_short" });
+      return res.status(400).json({ ok: false, error: "invalid_payload" });
+    }
+
+    if (!tsMs || nowMs - tsMs < MIN_SUBMIT_DELAY_MS) {
+      logLeadReject("validation_failed", req, { code: "timing_check_failed" });
+      return res.status(202).json({ ok: true });
+    }
+
     if (isSuspiciousPayload(name, contact, message)) {
+      logLeadReject("validation_failed", req, { code: "suspicious_payload" });
       return res.status(422).json({ ok: false, error: "suspicious_payload" });
     }
 
-    if (isRateLimited(ip, Date.now())) {
+    if (isDuplicateLead(ip, hashPayload(name, contact, message), nowMs)) {
+      logLeadReject("rate_limited", req, { code: "duplicate" });
+      return res.status(429).json({ ok: false, error: "rate_limited" });
+    }
+
+    if (isRateLimited(ip, nowMs)) {
+      logLeadReject("rate_limited", req, { code: "ip_window" });
       return res.status(429).json({ ok: false, error: "rate_limited" });
     }
 
@@ -192,7 +273,7 @@ async function leadHandler(req, res) {
       message,
       ip,
       userAgent,
-      timestamp,
+      timestamp: new Date(tsMs).toISOString(),
     });
 
     await leadTransporter.sendMail({
