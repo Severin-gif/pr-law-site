@@ -8,6 +8,10 @@ const srcIndex = path.join(srcDir, "index.html");
 const srcAssets = path.join(srcDir, "assets");
 const outIndex = path.join(outDir, "index.html");
 const outAssets = path.join(outDir, "assets");
+const srcApi = path.join(srcDir, "api");
+const outApi = path.join(outDir, "api");
+const srcHtaccess = path.join("public", ".htaccess");
+const outHtaccess = path.join(outDir, ".htaccess");
 
 function copyDir(src, dst) {
   fs.mkdirSync(dst, { recursive: true });
@@ -23,11 +27,20 @@ if (fs.existsSync(srcIndex)) {
   fs.copyFileSync(srcIndex, outIndex);
 }
 
-// чистим старые assets (чтобы не было мусора)
+// чистим старые assets/api (чтобы не было мусора)
 fs.rmSync(outAssets, { recursive: true, force: true });
+fs.rmSync(outApi, { recursive: true, force: true });
 
 if (fs.existsSync(srcAssets)) {
   copyDir(srcAssets, outAssets);
+}
+
+if (fs.existsSync(srcApi)) {
+  copyDir(srcApi, outApi);
+}
+
+if (fs.existsSync(srcHtaccess)) {
+  fs.copyFileSync(srcHtaccess, outHtaccess);
 }
 
 console.log("published dist to root");
