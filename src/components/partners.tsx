@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 type PartnerType = "Бухгалтер" | "Арбитражный управляющий" | "Оценщик" | "Аудитор";
 
-const FORM_ENDPOINT = "/api/partner-lead";
+const FORM_ENDPOINT = "/api/request-audit";
 
 export default function PartnersPage() {
   const [isOpen, setIsOpen] = useState(false);

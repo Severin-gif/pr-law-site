@@ -56,32 +56,6 @@ app.get("/health", (req, res) => {
   return res.status(200).json({ ok: true });
 });
 
-// 3. API
-app.post("/api/request-audit", (req, res) => {
-  try {
-    const { name, contact, message, consent, hp } = req.body || {};
-
-    if (hp) {
-      return res.json({ ok: true });
-    }
-
-    if (!name || !contact || !message || consent !== true) {
-      return res.status(400).json({ ok: false, error: "invalid_payload" });
-    }
-
-    return res.json({ ok: true });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json({ ok: false, error: "internal_error" });
-  }
-});
-// 4. ТОЛЬКО ПОСЛЕ ЭТОГО
-app.use(express.static(DIST_PATH));
-
-// 5. fallback
-app.use((req, res) => {
-  res.sendFile(path.join(DIST_PATH, "index.html"));
-});
 function clean(value, maxLen) {
   if (typeof value !== "string") return "";
   const normalized = value.trim().replace(/\s+/g, " ");
@@ -121,7 +95,6 @@ async function leadHandler(req, res) {
 }
 
 app.post("/api/request-audit", leadHandler);
-app.post("/api/lead", leadHandler);
 
 app.get("/api", (req, res) => {
   return res.status(200).json({ ok: true, service: "express" });
