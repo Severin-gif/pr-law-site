@@ -21,8 +21,7 @@ process.on("uncaughtException", (error) => {
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || "0.0.0.0";
-const DIST_PATH = path.join(__dirname, "..", "dist");
-
+const DIST_PATH = path.resolve("dist");
 const SMTP_HOST = cleanRequiredEnv("SMTP_HOST");
 const SMTP_PORT = parsePort(process.env.SMTP_PORT);
 const SMTP_SECURE = parseBool(process.env.SMTP_SECURE);
