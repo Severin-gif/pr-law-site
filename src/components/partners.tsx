@@ -12,6 +12,7 @@ export default function PartnersPage() {
   const [email, setEmail] = useState("");
   const [telegram, setTelegram] = useState("");
   const [note, setNote] = useState("");
+  const [hp, setHp] = useState("");
   const [status, setStatus] = useState<{ kind: "idle" | "ok" | "error"; text: string }>({
     kind: "idle",
     text: "",
@@ -81,13 +82,12 @@ export default function PartnersPage() {
     setLoading(true);
     try {
       const payload = {
-        partner_type: partnerType,
-        topic,
-        company: company.trim(),
-        email: email.trim(),
-        telegram: telegram.trim(),
-        note: note.trim(),
-        page: "/partners",
+        name: company.trim(),
+        contact: telegram.trim() || email.trim(),
+        message: [topic, note.trim(), `email: ${email.trim()}`].filter(Boolean).join("\n"),
+        consent: true,
+        hp: hp.trim(),
+        ts: Date.now(),
       };
 
       const res = await fetch(FORM_ENDPOINT, {
@@ -105,6 +105,7 @@ export default function PartnersPage() {
       setEmail("");
       setTelegram("");
       setNote("");
+      setHp("");
 
       setTimeout(() => setIsOpen(false), 700);
     } catch {
@@ -181,6 +182,15 @@ export default function PartnersPage() {
             <form className="p-5" onSubmit={onSubmit}>
               <input type="hidden" name="partner_type" value={partnerType} />
               <input type="hidden" name="topic" value={topic} />
+              <input
+                type="text"
+                value={hp}
+                onChange={(e) => setHp(e.target.value)}
+                className="hidden"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+              />
 
               <div className="space-y-3">
                 <div>
