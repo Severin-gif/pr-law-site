@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
+import { requestAudit, type RequestAuditPayload } from "../config/requestAudit";
 
 type PartnerType = "Бухгалтер" | "Арбитражный управляющий" | "Оценщик" | "Аудитор";
-
-const FORM_ENDPOINT = "/api/request-audit";
 
 export default function PartnersPage() {
   const [isOpen, setIsOpen] = useState(false);
@@ -72,6 +71,7 @@ export default function PartnersPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (loading) return;
     setStatus({ kind: "idle", text: "" });
 
     if (!company.trim() || !email.trim()) {
@@ -81,7 +81,7 @@ export default function PartnersPage() {
 
     setLoading(true);
     try {
-      const payload = {
+      const payload: RequestAuditPayload = {
         name: company.trim(),
         contact: telegram.trim() || email.trim(),
         message: [topic, note.trim(), `email: ${email.trim()}`].filter(Boolean).join("\n"),
@@ -90,15 +90,13 @@ export default function PartnersPage() {
         ts: Date.now(),
       };
 
-      const res = await fetch(FORM_ENDPOINT, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const result = await requestAudit(payload);
+      if (!result.ok) {
+        setStatus({ kind: "error", text: result.error });
+        return;
+      }
 
-      if (!res.ok) throw new Error(await res.text().catch(() => "Ошибка отправки"));
-
-      setStatus({ kind: "ok", text: "Заявка отправлена. Ответ — на e-mail." });
+      setStatus({ kind: "ok", text: "Заявка принята сервером. Ответ — на e-mail." });
 
       // reset inputs (keep partner type/topic)
       setCompany("");
@@ -201,6 +199,7 @@ export default function PartnersPage() {
                     onChange={(e) => setCompany(e.target.value)}
                     placeholder="ООО «___» / ИП ___"
                     required
+                    disabled={loading}
                   />
                 </div>
 
@@ -214,6 +213,7 @@ export default function PartnersPage() {
                       placeholder="name@domain.ru"
                       type="email"
                       required
+                      disabled={loading}
                     />
                   </div>
                   <div>
@@ -223,6 +223,7 @@ export default function PartnersPage() {
                       value={telegram}
                       onChange={(e) => setTelegram(e.target.value)}
                       placeholder="@username или ссылка"
+                      disabled={loading}
                     />
                   </div>
                 </div>
@@ -235,6 +236,7 @@ export default function PartnersPage() {
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="1–3 предложения, без персональных данных клиента"
                     rows={4}
+                    disabled={loading}
                   />
                 </div>
               </div>
