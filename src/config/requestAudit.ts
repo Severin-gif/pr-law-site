@@ -1,4 +1,4 @@
-export const REQUEST_AUDIT_ENDPOINT = "/form-handler.php";
+export const REQUEST_AUDIT_ENDPOINT = "/api/request-audit";
 
 export type RequestAuditPayload = {
   name: string;
