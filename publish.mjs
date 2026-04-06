@@ -13,6 +13,19 @@ const outApi = path.join(outDir, "api");
 const srcHtaccess = path.join("public", ".htaccess");
 const outHtaccess = path.join(outDir, ".htaccess");
 
+function cleanupOldStaticArtifacts() {
+  fs.rmSync(outAssets, { recursive: true, force: true });
+  fs.rmSync(outApi, { recursive: true, force: true });
+
+  const staleRootArtifacts = fs
+    .readdirSync(outDir, { withFileTypes: true })
+    .filter((entry) => entry.isFile() && /^index-.*\.(js|css|map)$/.test(entry.name));
+
+  for (const artifact of staleRootArtifacts) {
+    fs.rmSync(path.join(outDir, artifact.name), { force: true });
+  }
+}
+
 function copyDir(src, dst) {
   fs.mkdirSync(dst, { recursive: true });
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
@@ -27,9 +40,8 @@ if (fs.existsSync(srcIndex)) {
   fs.copyFileSync(srcIndex, outIndex);
 }
 
-// чистим старые assets/api (чтобы не было мусора)
-fs.rmSync(outAssets, { recursive: true, force: true });
-fs.rmSync(outApi, { recursive: true, force: true });
+// чистим старые статические артефакты (чтобы не было мусора после деплоя)
+cleanupOldStaticArtifacts();
 
 if (fs.existsSync(srcAssets)) {
   copyDir(srcAssets, outAssets);
