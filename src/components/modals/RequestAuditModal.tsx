@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
+import { requestAudit } from "../../config/requestAudit";
 
 type Props = {
   open: boolean;
@@ -39,6 +40,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (status === "sending") return;
 
     if (!consent) {
       setStatus("error");
@@ -50,25 +52,22 @@ export function RequestAuditModal({ open, onClose }: Props) {
     setErrorText("");
 
     try {
-      const res = await fetch("/api/request-audit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          contact,
-          message,
-          consent: true,
-          hp,
-          ts: Date.now(),
-        }),
+      const result = await requestAudit({
+        name,
+        contact,
+        message,
+        consent: true,
+        hp,
+        ts: Date.now(),
       });
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data?.error || "Ошибка отправки");
+      if (result.ok) {
+        setStatus("ok");
+        return;
       }
 
-      setStatus("ok");
+      setStatus("error");
+      setErrorText(result.error);
     } catch (err: unknown) {
       setStatus("error");
       setErrorText(err instanceof Error ? err.message : "Ошибка отправки");
@@ -102,6 +101,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
             className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/80 hover:bg-white/5"
             onClick={onClose}
             type="button"
+            disabled={status === "sending"}
           >
             Закрыть
           </button>
@@ -126,6 +126,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
               onChange={(e) => setName(e.target.value)}
               required
               minLength={2}
+              disabled={status === "sending"}
               className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
               placeholder="Как к вам обращаться"
             />
@@ -140,6 +141,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
               onChange={(e) => setContact(e.target.value)}
               required
               minLength={5}
+              disabled={status === "sending"}
               className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
               placeholder="@telegram или +7… или email"
             />
@@ -153,6 +155,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
               rows={5}
               required
               minLength={10}
+              disabled={status === "sending"}
               className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
               placeholder="Что произошло? Какие документы есть? Какие сроки?"
             />
@@ -165,6 +168,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
               checked={consent}
               onChange={(e) => setConsent(e.target.checked)}
               required
+              disabled={status === "sending"}
             />
             <span>
               Согласен на обработку персональных данных{" "}
@@ -188,7 +192,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
 
             {status === "ok" && (
               <span className="text-sm text-white/70">
-                Отправлено. Я свяжусь с вами по указанному контакту.
+                Заявка принята сервером. Я свяжусь с вами по указанному контакту.
               </span>
             )}
             {status === "error" && (

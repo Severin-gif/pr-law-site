@@ -22,6 +22,42 @@ Express обслуживает следующие endpoint'ы:
 
 В проекте используется **один канонический способ** обработки форм: фронтенд отправляет заявку на Express endpoint `POST /api/request-audit`.
 
+### Единый JSON-контракт `POST /api/request-audit`
+
+Контракт зафиксирован в коде фронтенда: `src/config/requestAudit.ts`.
+
+**Request (`Content-Type: application/json`)**
+
+```json
+{
+  "name": "string (min 2)",
+  "contact": "string (min 5)",
+  "message": "string (min 10)",
+  "consent": true,
+  "hp": "string (honeypot, обычно пустая строка)",
+  "ts": 1712400000000
+}
+```
+
+**Success response**
+
+```json
+{
+  "ok": true
+}
+```
+
+**Error response (валидация, rate limit, server error)**
+
+```json
+{
+  "ok": false,
+  "error": "invalid_payload | rate_limited | internal_error | ..."
+}
+```
+
+На фронтенде успех показывается только при `HTTP 2xx` **и** `ok: true`; для `HTTP 4xx/5xx` и любых `ok: false` отображается ошибка.
+
 ### SMTP переменные окружения
 
 Для отправки заявок через SMTP должны быть заданы переменные окружения (без хардкода в репозитории):
