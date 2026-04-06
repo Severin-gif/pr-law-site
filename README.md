@@ -10,28 +10,17 @@
 
 > Канонический серверный entrypoint: `server/index.js`.
 
-## Runtime API (единый набор)
+## Runtime API (production)
 
 Express обслуживает следующие endpoint'ы:
 
 - `GET /health` — healthcheck.
-- `GET /api/health` — API healthcheck.
-- `POST /api/request-audit` — основной endpoint обработки формы.
-- `POST /api/lead` — алиас на тот же обработчик (совместимость).
+- `GET /api` — API info endpoint.
+- `POST /api/request-audit` — **единый production endpoint** для всех форм.
 
 ### Обработка форм
 
-В проекте используется **один способ** обработки форм: фронтенд отправляет заявку на Express endpoint `POST /api/request-audit`.
-
-## Архив legacy-роутов (не участвуют в runtime)
-
-Ранее в репозитории были Next-style route handlers. Они изолированы в архив и **не подключаются в текущем runtime**:
-
-- `legacy/next-routes/app/api/request-audit/route.ts`
-- `legacy/next-routes/app/api/__ping/route.ts`
-- `legacy/next-routes/server/app/api/lead/route.tsx`
-
-Использовать эти файлы в текущей архитектуре не нужно.
+В проекте используется **один канонический способ** обработки форм: фронтенд отправляет заявку на Express endpoint `POST /api/request-audit`.
 
 ## Локальный запуск
 
