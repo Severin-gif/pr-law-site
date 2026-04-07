@@ -52,6 +52,18 @@ const MIN_CONTACT_LEN = 5;
 const MIN_SUBMIT_DELAY_MS = 1200;
 const LEAD_ALLOWED_FIELDS = new Set(["name", "contact", "message", "consent", "hp", "ts"]);
 
+
+app.get("*", (req, res) => {
+  if (!indexExists) {
+    return res.status(200).send("OK");
+  }
+  res.sendFile(path.join(DIST_PATH, "index.html"));
+});
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ ok: true });
+});
+
 app.set("trust proxy", 1);
 app.use(express.json({ limit: "32kb" }));
 
