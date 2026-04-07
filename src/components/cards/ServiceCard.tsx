@@ -1,38 +1,40 @@
+import { BriefcaseBusiness, FileText, Scale, Shield } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { ServiceItem } from "../../config/services";
 
 type ServiceCardProps = {
   service: ServiceItem;
 };
 
+const ICON_BY_NAME: Record<ServiceItem["icon"], LucideIcon> = {
+  scale: Scale,
+  file: FileText,
+  briefcase: BriefcaseBusiness,
+  shield: Shield,
+};
+
 const ServiceCard = ({ service }: ServiceCardProps) => {
+  const Icon = ICON_BY_NAME[service.icon];
+
   return (
-    <article
-      className="flex h-full min-h-[340px] flex-col rounded-2xl bg-white/[0.03] p-6 ring-1 ring-white/10 sm:p-7"
+    <a
+      href={service.href}
+      className="group flex h-full min-h-[168px] items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-colors duration-150 hover:border-white/20 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 sm:p-5"
       aria-label={service.title}
     >
-      <h3 className="text-[22px] font-semibold leading-tight tracking-tight text-white sm:text-[24px]">
-        {service.title}
-      </h3>
+      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/12 bg-white/[0.03]">
+        <Icon className="h-[18px] w-[18px] text-white/80" strokeWidth={1.8} />
+      </span>
 
-      <ul className="mt-5 space-y-3 text-[15px] leading-relaxed text-white/75">
-        {service.items.map((item) => (
-          <li key={item} className="flex gap-3">
-            <span className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-white/45" />
-            <span>{item}</span>
-          </li>
-        ))}
-      </ul>
-
-      <p className="mt-6 text-[11px] font-medium uppercase tracking-[0.14em] text-white/45">Результат</p>
-      <p className="mt-2 text-[15px] leading-relaxed text-white/88">{service.result}</p>
-
-      <a
-        href={service.ctaHref}
-        className="mt-auto inline-flex pt-7 text-sm font-medium text-white/90 transition-colors duration-150 hover:text-white"
-      >
-        {service.ctaLabel}
-      </a>
-    </article>
+      <span className="min-w-0">
+        <span className="block text-base font-medium leading-6 text-white">
+          {service.title}
+        </span>
+        <span className="mt-1.5 block text-sm leading-6 text-white/60">
+          {service.description}
+        </span>
+      </span>
+    </a>
   );
 };
 
