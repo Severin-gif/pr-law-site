@@ -40,13 +40,24 @@ const ContactSection: React.FC = () => {
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-slate-300">Телефон</label>
+              <label className="mb-1 block text-xs text-slate-300">Email</label>
               <input
-                type="tel"
-                name="phone"
+                type="email"
+                name="email"
                 required
                 className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-[#B0202F]"
-                placeholder="Телефон"
+                placeholder="Email"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs text-slate-300">
+                Контакт для связи (опционально)
+              </label>
+              <input
+                type="text"
+                name="contact"
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-[#B0202F]"
+                placeholder="Телефон / Telegram / WhatsApp"
               />
             </div>
             <div>
@@ -56,12 +67,31 @@ const ContactSection: React.FC = () => {
               <textarea
                 name="message"
                 rows={3}
+                required
                 className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-[#B0202F]"
                 placeholder="Суть вопроса"
               />
             </div>
+            <label className="flex items-start gap-2 pt-1 text-[11px] leading-snug text-slate-400">
+              <input
+                type="checkbox"
+                name="consent"
+                required
+                className="mt-0.5 h-4 w-4 rounded border border-white/20 bg-black/40 accent-[#B0202F]"
+              />
+              <span>
+                Согласен(а) на обработку персональных данных и принимаю условия
+                политики конфиденциальности.
+              </span>
+            </label>
             <input type="hidden" name="_captcha" value="false" />
-            <input type="hidden" name="_subject" value="Новая заявка с сайта" />
+            <input
+              type="hidden"
+              name="_subject"
+              value="Новая заявка с сайта letter-law.ru"
+            />
+            <input type="hidden" name="_template" value="table" />
+            <input type="hidden" name="_next" value="http://localhost:5173" />
             <button
               type="submit"
               className="mt-2 w-full rounded-full bg-[#B0202F] px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-[#B0202F]/40 transition hover:bg-[#d1283b]"
