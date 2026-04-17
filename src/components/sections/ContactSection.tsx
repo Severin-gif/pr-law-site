@@ -24,23 +24,29 @@ const ContactSection: React.FC = () => {
         </div>
 
         <div className="rounded-2xl bg-white/5 p-5 shadow-[0_18px_40px_rgba(0,0,0,0.6)]">
-          <form className="space-y-3 text-sm">
+          <form
+            action="https://formsubmit.co/lead@letter-law.ru"
+            method="POST"
+            className="space-y-3 text-sm"
+          >
             <div>
               <label className="mb-1 block text-xs text-slate-300">Имя</label>
               <input
                 type="text"
+                name="name"
+                required
                 className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-[#B0202F]"
-                placeholder="Как к вам обращаться"
+                placeholder="Имя"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-slate-300">
-                Контакт
-              </label>
+              <label className="mb-1 block text-xs text-slate-300">Телефон</label>
               <input
-                type="text"
+                type="tel"
+                name="phone"
+                required
                 className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-[#B0202F]"
-                placeholder="Телефон или e-mail"
+                placeholder="Телефон"
               />
             </div>
             <div>
@@ -48,16 +54,19 @@ const ContactSection: React.FC = () => {
                 Кратко о вопросе
               </label>
               <textarea
+                name="message"
                 rows={3}
                 className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-slate-50 outline-none placeholder:text-slate-500 focus:border-[#B0202F]"
-                placeholder="Тип спора, сумма, стадия (досудебная / суд)…"
+                placeholder="Суть вопроса"
               />
             </div>
+            <input type="hidden" name="_captcha" value="false" />
+            <input type="hidden" name="_subject" value="Новая заявка с сайта" />
             <button
               type="submit"
               className="mt-2 w-full rounded-full bg-[#B0202F] px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-[#B0202F]/40 transition hover:bg-[#d1283b]"
             >
-              Отправить заявку
+              Отправить
             </button>
             <p className="pt-1 text-[11px] leading-snug text-slate-500">
               Отправка формы не создаёт договорных отношений. Условия работы
