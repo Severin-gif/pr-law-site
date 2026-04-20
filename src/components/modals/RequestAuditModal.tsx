@@ -59,7 +59,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
             value="Новая заявка с сайта letter-law.ru"
           />
           <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_next" value="http://localhost:5173" />
+          <input type="hidden" name="_next" value="https://letter-law.ru" />
 
           <div>
             <label className="text-xs text-white/60">Имя</label>
