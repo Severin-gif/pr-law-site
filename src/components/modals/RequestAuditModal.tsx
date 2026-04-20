@@ -1,6 +1,5 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { requestAudit } from "../../config/requestAudit";
 
 type Props = {
   open: boolean;
@@ -8,16 +7,6 @@ type Props = {
 };
 
 export function RequestAuditModal({ open, onClose }: Props) {
-  const [name, setName] = useState("");
-  const [contact, setContact] = useState(""); // телефон/telegram/email
-  const [message, setMessage] = useState("");
-  const [consent, setConsent] = useState(false);
-  const [hp, setHp] = useState(""); // антиспам: должен быть пустым
-  const [status, setStatus] = useState<"idle" | "sending" | "ok" | "error">(
-    "idle"
-  );
-  const [errorText, setErrorText] = useState<string>("");
-
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
@@ -25,54 +14,6 @@ export function RequestAuditModal({ open, onClose }: Props) {
     if (open) document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [open, onClose]);
-
-  useEffect(() => {
-    if (!open) {
-      setStatus("idle");
-      setErrorText("");
-      setName("");
-      setContact("");
-      setMessage("");
-      setConsent(false);
-      setHp("");
-    }
-  }, [open]);
-
-  async function onSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (status === "sending") return;
-
-    if (!consent) {
-      setStatus("error");
-      setErrorText("Consent required");
-      return;
-    }
-
-    setStatus("sending");
-    setErrorText("");
-
-    try {
-      const result = await requestAudit({
-        name,
-        contact,
-        message,
-        consent: true,
-        hp,
-        ts: Date.now(),
-      });
-
-      if (result.ok) {
-        setStatus("ok");
-        return;
-      }
-
-      setStatus("error");
-      setErrorText(result.error);
-    } catch (err: unknown) {
-      setStatus("error");
-      setErrorText(err instanceof Error ? err.message : "Ошибка отправки");
-    }
-  }
 
   if (!open) return null;
 
@@ -101,61 +42,67 @@ export function RequestAuditModal({ open, onClose }: Props) {
             className="rounded-lg border border-white/10 px-3 py-1.5 text-sm text-white/80 hover:bg-white/5"
             onClick={onClose}
             type="button"
-            disabled={status === "sending"}
           >
             Закрыть
           </button>
         </div>
 
-        <form className="mt-6 space-y-4" onSubmit={onSubmit}>
-          {/* honeypot (скрытое поле) */}
+        <form
+          className="mt-6 space-y-4"
+          action="https://formsubmit.co/lead@letter-law.ru"
+          method="POST"
+        >
+          <input type="hidden" name="_captcha" value="false" />
           <input
-            type="text"
-            value={hp}
-            onChange={(e) => setHp(e.target.value)}
-            className="hidden"
-            tabIndex={-1}
-            autoComplete="off"
-            aria-hidden="true"
+            type="hidden"
+            name="_subject"
+            value="Новая заявка с сайта letter-law.ru"
           />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_next" value="http://localhost:5173" />
 
           <div>
             <label className="text-xs text-white/60">Имя</label>
             <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              type="text"
+              name="name"
               required
               minLength={2}
-              disabled={status === "sending"}
               className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
               placeholder="Как к вам обращаться"
             />
           </div>
 
           <div>
+            <label className="text-xs text-white/60">Email</label>
+            <input
+              type="email"
+              name="email"
+              required
+              className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div>
             <label className="text-xs text-white/60">
-              Контакт (телефон / Telegram / email)
+              Контакт (телефон / Telegram, опционально)
             </label>
             <input
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-              required
-              minLength={5}
-              disabled={status === "sending"}
+              type="text"
+              name="contact"
               className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
-              placeholder="@telegram или +7… или email"
+              placeholder="@telegram или +7…"
             />
           </div>
 
           <div>
             <label className="text-xs text-white/60">Суть вопроса</label>
             <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              name="message"
               rows={5}
               required
               minLength={10}
-              disabled={status === "sending"}
               className="mt-2 w-full resize-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none focus:border-white/20"
               placeholder="Что произошло? Какие документы есть? Какие сроки?"
             />
@@ -164,11 +111,9 @@ export function RequestAuditModal({ open, onClose }: Props) {
           <label className="flex items-start gap-3 text-sm text-white/70">
             <input
               type="checkbox"
+              name="consent"
               className="mt-1 h-4 w-4 rounded border-white/20 bg-white/5 text-[#4B8BFF] focus:ring-[#4B8BFF]/40"
-              checked={consent}
-              onChange={(e) => setConsent(e.target.checked)}
               required
-              disabled={status === "sending"}
             />
             <span>
               Согласен на обработку персональных данных{" "}
@@ -184,20 +129,10 @@ export function RequestAuditModal({ open, onClose }: Props) {
           <div className="flex items-center gap-3">
             <button
               type="submit"
-              disabled={status === "sending"}
-              className="inline-flex items-center justify-center rounded-xl bg-[#4B8BFF] px-5 py-3 text-sm font-medium text-white shadow-sm shadow-[#4B8BFF]/25 hover:brightness-110 disabled:opacity-60"
+              className="inline-flex items-center justify-center rounded-xl bg-[#4B8BFF] px-5 py-3 text-sm font-medium text-white shadow-sm shadow-[#4B8BFF]/25 hover:brightness-110"
             >
-              {status === "sending" ? "Отправляю…" : "Отправить"}
+              Отправить
             </button>
-
-            {status === "ok" && (
-              <span className="text-sm text-white/70">
-                Заявка принята сервером. Я свяжусь с вами по указанному контакту.
-              </span>
-            )}
-            {status === "error" && (
-              <span className="text-sm text-red-300">{errorText}</span>
-            )}
           </div>
         </form>
       </div>
