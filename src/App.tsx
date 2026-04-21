@@ -9,6 +9,8 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import ProBono from "./pages/ProBono";
 import PartnersPage from "./components/partners";
+import Success from "./pages/Success"
+
 
 const App = () => {
   return (
@@ -23,6 +25,8 @@ const App = () => {
           <Route path="/terms" element={<Terms />} />
           <Route path="/partners" element={<PartnersPage />} />
           <Route path="/pro-bono" element={<ProBono />} />
+          <Route path="/success" element={<Success />} />
+
         </Routes>
       </main>
 

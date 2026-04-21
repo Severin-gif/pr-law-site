@@ -60,6 +60,7 @@ export function RequestAuditModal({ open, onClose }: Props) {
           />
           <input type="hidden" name="_template" value="table" />
           <input type="hidden" name="_next" value="https://letter-law.ru" />
+          <input type="hidden" name="_next" value="https://letter-law.ru/success" />
 
           <div>
             <label className="text-xs text-white/60">Имя</label>
