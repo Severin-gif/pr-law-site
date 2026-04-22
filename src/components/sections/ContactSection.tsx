@@ -84,6 +84,8 @@ const ContactSection: React.FC = () => {
                 политики конфиденциальности.
               </span>
             </label>
+            <input type="hidden" name="_next" value="https://letter-law.ru/success" />
+            <input type="hidden" name="_url" value="https://letter-law.ru/" />
             <input type="hidden" name="_captcha" value="false" />
             <input
               type="hidden"
@@ -91,7 +93,6 @@ const ContactSection: React.FC = () => {
               value="Новая заявка с сайта letter-law.ru"
             />
             <input type="hidden" name="_template" value="table" />
-            <input type="hidden" name="_next" value="https://letter-law.ru" />
             <button
               type="submit"
               className="mt-2 w-full rounded-full bg-[#B0202F] px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-[#B0202F]/40 transition hover:bg-[#d1283b]"
