@@ -52,6 +52,8 @@ export function RequestAuditModal({ open, onClose }: Props) {
           action="https://formsubmit.co/lead@letter-law.ru"
           method="POST"
         >
+          <input type="hidden" name="_next" value="https://letter-law.ru/success" />
+          <input type="hidden" name="_url" value="https://letter-law.ru/" />
           <input type="hidden" name="_captcha" value="false" />
           <input
             type="hidden"
@@ -59,7 +61,6 @@ export function RequestAuditModal({ open, onClose }: Props) {
             value="Новая заявка с сайта letter-law.ru"
           />
           <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_next" value="https://letter-law.ru/success" />
 
           <div>
             <label className="text-xs text-white/60">Имя</label>
