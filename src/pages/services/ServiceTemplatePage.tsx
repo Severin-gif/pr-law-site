@@ -1,6 +1,7 @@
 import { useEffect } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
+import { SERVICES } from "../../config/services";
 import type { ServiceItem } from "../../config/services";
 
 type ServiceTemplatePageProps = {
@@ -26,6 +27,8 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
     return <Navigate to="/" replace />;
   }
 
+  const relatedServices = SERVICES.filter((item) => item.id !== service.id).slice(0, 3);
+
   return (
     <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
       <section className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-8">
@@ -37,14 +40,14 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
       </section>
 
       <section className="mt-6 sm:mt-8">
-        <h2 className={sectionTitleClass}>Summary</h2>
+        <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.summary}</h2>
         <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">
           {service.placeholders.summary}
         </p>
       </section>
 
       <section className="mt-8 sm:mt-10">
-        <h2 className={sectionTitleClass}>Situations</h2>
+        <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.situations}</h2>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {service.placeholders.situations.map((item) => (
             <article key={item} className={sectionCardClass}>
@@ -55,7 +58,7 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
       </section>
 
       <section className="mt-8 sm:mt-10">
-        <h2 className={sectionTitleClass}>Included</h2>
+        <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.included}</h2>
         <ul className="mt-3 space-y-2 text-sm text-white/80 sm:text-base">
           {service.placeholders.included.map((item) => (
             <li key={item} className="flex gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
@@ -67,7 +70,7 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
       </section>
 
       <section className="mt-8 sm:mt-10">
-        <h2 className={sectionTitleClass}>Process</h2>
+        <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.process}</h2>
         <ol className="mt-3 space-y-3">
           {service.placeholders.process.map((item, index) => (
             <li key={item} className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
@@ -81,7 +84,7 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
       </section>
 
       <section className="mt-8 sm:mt-10">
-        <h2 className={sectionTitleClass}>FAQ</h2>
+        <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.faq}</h2>
         <div className="mt-3 space-y-3">
           {service.placeholders.faq.map((item) => (
             <article key={item.question} className={sectionCardClass}>
@@ -93,7 +96,7 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
       </section>
 
       <section className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-5 sm:mt-10 sm:p-8">
-        <h2 className={sectionTitleClass}>Final CTA</h2>
+        <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.finalCta}</h2>
         <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">
           {service.placeholders.finalCta}
         </p>
@@ -104,6 +107,23 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
           Обсудить задачу
         </a>
       </section>
+
+      {relatedServices.length > 0 ? (
+        <section className="mt-8 sm:mt-10">
+          <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.related}</h2>
+          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+            {relatedServices.map((item) => (
+              <Link
+                key={item.id}
+                to={item.path}
+                className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/80 transition hover:border-white/20 hover:text-white"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 };
