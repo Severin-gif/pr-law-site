@@ -13,7 +13,7 @@ export const SERVICES: ServiceItem[] = [
     slug: "arbitration-bankruptcy",
     title: "Арбитраж и банкротство",
     description: "Сопровождение споров и банкротных процедур с контролем рисков на каждом этапе.",
-    href: "#contact",
+    href: "/services/arbitration-bankruptcy",
     icon: "scale",
   },
   {
@@ -21,15 +21,15 @@ export const SERVICES: ServiceItem[] = [
     slug: "contract-work",
     title: "Договорная работа",
     description: "Проверка и подготовка договоров, чтобы исключить слабые условия и лишние риски.",
-    href: "#contact",
+    href: "/services/contract-work",
     icon: "file",
   },
   {
-    id: "corporate-support",
+    id: "corporate",
     slug: "corporate",
     title: "Корпоративные вопросы",
     description: "Структурные решения по конфликтам участников, сделкам и управлению компанией.",
-    href: "#contact",
+    href: "/services/corporate",
     icon: "briefcase",
   },
   {
@@ -37,7 +37,7 @@ export const SERVICES: ServiceItem[] = [
     slug: "asset-protection",
     title: "Защита активов",
     description: "Превентивная защита активов, претензионная работа и снижение уязвимостей бизнеса.",
-    href: "#contact",
+    href: "/services/asset-protection",
     icon: "shield",
   },
 ];

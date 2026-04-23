@@ -1,5 +1,6 @@
 import { BriefcaseBusiness, FileText, Scale, Shield } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import type { ServiceItem } from "../../config/services";
 
 type ServiceCardProps = {
@@ -17,8 +18,8 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
   const Icon = ICON_BY_NAME[service.icon];
 
   return (
-    <a
-      href={service.href}
+    <Link
+      to={service.href}
       className="group flex h-full min-h-[168px] items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-colors duration-150 hover:border-white/20 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 sm:p-5"
       aria-label={service.title}
     >
@@ -34,7 +35,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
           {service.description}
         </span>
       </span>
-    </a>
+    </Link>
   );
 };
 
