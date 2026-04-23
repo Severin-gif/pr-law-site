@@ -1,8 +1,3 @@
-export type ServiceSeo = {
-  title: string;
-  description: string;
-};
-
 export type ServiceFaqItem = {
   question: string;
   answer: string;
@@ -21,13 +16,14 @@ export type ServicePlaceholders = {
 
 export type ServiceItem = {
   id: string;
+  name: string;
+  summary: string;
   slug: string;
+  path: string;
   title: string;
-  h1: string;
   description: string;
-  href: string;
+  h1: string;
   icon: "scale" | "file" | "briefcase" | "shield";
-  seo: ServiceSeo;
   placeholders: ServicePlaceholders;
 };
 
@@ -66,58 +62,54 @@ const defaultPlaceholders = (label: string): ServicePlaceholders => ({
 export const SERVICES: ServiceItem[] = [
   {
     id: "arbitration-bankruptcy",
+    name: "Арбитраж и банкротство",
+    summary: "Сопровождение споров и банкротных процедур с контролем рисков на каждом этапе.",
     slug: "arbitration-bankruptcy",
-    title: "Арбитраж и банкротство",
+    path: "/services/arbitration-bankruptcy",
+    title: "Арбитраж и банкротство для бизнеса — Letter Law",
+    description:
+      "Представление в арбитражных спорах и процедурах банкротства: стратегия, документы и защита интересов компании.",
     h1: "Арбитраж и банкротство",
-    description: "Сопровождение споров и банкротных процедур с контролем рисков на каждом этапе.",
-    href: "/services/arbitration-bankruptcy",
     icon: "scale",
-    seo: {
-      title: "Арбитраж и банкротство — шаблон страницы услуги",
-      description: "Черновой SEO-блок для страницы услуги «Арбитраж и банкротство».",
-    },
     placeholders: defaultPlaceholders("Арбитраж и банкротство"),
   },
   {
     id: "contract-work",
+    name: "Договорная работа",
+    summary: "Проверка и подготовка договоров, чтобы исключить слабые условия и лишние риски.",
     slug: "contract-work",
-    title: "Договорная работа",
+    path: "/services/contract-work",
+    title: "Договорная работа и правовая экспертиза договоров — Letter Law",
+    description:
+      "Готовим и проверяем договоры под задачи бизнеса: формулировки, ответственность сторон, минимизация спорных рисков.",
     h1: "Договорная работа",
-    description: "Проверка и подготовка договоров, чтобы исключить слабые условия и лишние риски.",
-    href: "/services/contract-work",
     icon: "file",
-    seo: {
-      title: "Договорная работа — шаблон страницы услуги",
-      description: "Черновой SEO-блок для страницы услуги «Договорная работа».",
-    },
     placeholders: defaultPlaceholders("Договорная работа"),
   },
   {
     id: "corporate",
+    name: "Корпоративные вопросы",
+    summary: "Структурные решения по конфликтам участников, сделкам и управлению компанией.",
     slug: "corporate",
-    title: "Корпоративные вопросы",
+    path: "/services/corporate",
+    title: "Корпоративные вопросы и сопровождение сделок — Letter Law",
+    description:
+      "Юридическое сопровождение корпоративных изменений: сделки с долями, споры участников, защита управленческих решений.",
     h1: "Корпоративные вопросы",
-    description: "Структурные решения по конфликтам участников, сделкам и управлению компанией.",
-    href: "/services/corporate",
     icon: "briefcase",
-    seo: {
-      title: "Корпоративные вопросы — шаблон страницы услуги",
-      description: "Черновой SEO-блок для страницы услуги «Корпоративные вопросы».",
-    },
     placeholders: defaultPlaceholders("Корпоративные вопросы"),
   },
   {
     id: "asset-protection",
+    name: "Защита активов",
+    summary: "Превентивная защита активов, претензионная работа и снижение уязвимостей бизнеса.",
     slug: "asset-protection",
-    title: "Защита активов",
+    path: "/services/asset-protection",
+    title: "Защита активов компании и бенефициаров — Letter Law",
+    description:
+      "Выстраиваем превентивную защиту активов: аудит рисков, претензионная работа и правовые меры против потерь бизнеса.",
     h1: "Защита активов",
-    description: "Превентивная защита активов, претензионная работа и снижение уязвимостей бизнеса.",
-    href: "/services/asset-protection",
     icon: "shield",
-    seo: {
-      title: "Защита активов — шаблон страницы услуги",
-      description: "Черновой SEO-блок для страницы услуги «Защита активов».",
-    },
     placeholders: defaultPlaceholders("Защита активов"),
   },
 ];
