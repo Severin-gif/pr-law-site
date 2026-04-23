@@ -16,10 +16,10 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
       return;
     }
 
-    document.title = service.seo.title;
+    document.title = service.title;
 
     const descriptionTag = upsertMetaTag("name", "description");
-    descriptionTag.setAttribute("content", service.seo.description);
+    descriptionTag.setAttribute("content", service.description);
   }, [service]);
 
   if (!service) {

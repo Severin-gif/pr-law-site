@@ -19,9 +19,9 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
 
   return (
     <Link
-      to={service.href}
+      to={service.path}
       className="group flex h-full min-h-[168px] items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4 transition-colors duration-150 hover:border-white/20 hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/35 sm:p-5"
-      aria-label={service.title}
+      aria-label={service.name}
     >
       <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/12 bg-white/[0.03]">
         <Icon className="h-[18px] w-[18px] text-white/80" strokeWidth={1.8} />
@@ -29,10 +29,10 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
 
       <span className="min-w-0">
         <span className="block text-base font-medium leading-6 text-white">
-          {service.title}
+          {service.name}
         </span>
         <span className="mt-1.5 block text-sm leading-6 text-white/60">
-          {service.description}
+          {service.summary}
         </span>
       </span>
     </Link>
