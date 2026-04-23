@@ -108,6 +108,16 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
         </a>
       </section>
 
+      {service.seoText && (
+        <section style={{ marginTop: "40px" }}>
+          {service.seoText.split("\n\n").map((p, i) => (
+            <p key={i} style={{ marginBottom: "12px" }}>
+              {p}
+            </p>
+          ))}
+        </section>
+      )}
+
       {relatedServices.length > 0 ? (
         <section className="mt-8 sm:mt-10">
           <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.related}</h2>
