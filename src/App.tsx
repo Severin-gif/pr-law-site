@@ -5,6 +5,8 @@ import { SERVICES } from "./config/services";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 
+import ArbitrationBankruptcy from "./pages/ArbitrationBankruptcy";
+
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Privacy from "./pages/Privacy";
@@ -13,6 +15,7 @@ import ProBono from "./pages/ProBono";
 import PartnersPage from "./components/partners";
 import Success from "./pages/Success";
 import ServiceTemplatePage from "./pages/services/ServiceTemplatePage";
+
 
 
 const App = () => {
@@ -29,6 +32,7 @@ const App = () => {
           <Route path="/partners" element={<PartnersPage />} />
           <Route path="/pro-bono" element={<ProBono />} />
           <Route path="/success" element={<Success />} />
+          <Route path="/services/arbitration-bankruptcy" element={<ArbitrationBankruptcy />} />
           {SERVICES.map((service) => (
             <Route
               key={service.id}
