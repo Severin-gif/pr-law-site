@@ -1,6 +1,28 @@
 # pr-law-site
 
-Сайт работает как **SPA (Vite + React)** с единым backend-слоем на **Express**.
+Сайт в production работает как **SPA (Vite + React) + Express runtime**.
+
+## Фактический production runtime
+
+На **2026-04-27** в проде активен только следующий путь запуска:
+
+- `npm run build` → собирается Vite SPA в `dist/`.
+- `npm run start` / контейнерный `CMD` → запускается `node server/index.js`.
+- `server/index.js` отдает статику из `dist/` и API endpoint'ы.
+
+Что важно:
+
+- `server/app/*` (включая `server/app/layout.tsx`) сейчас **не участвует** в production runtime.
+- В `package.json` отсутствует `next`, а в Docker/runtime стартует только `server/index.js`, поэтому `server/app` не является активной прод-веткой рендера.
+
+## Источник истины для SEO (текущее состояние)
+
+Поскольку в проде активен SPA runtime, источником истины являются:
+
+- Базовые (дефолтные) SEO-теги: `index.html`.
+- Пер-страничные title/description/canonical: React-страницы (`Helmet` / прямые обновления `document.head`).
+
+`server/app/layout.tsx` содержит SEO-метаданные для Next App Router, но это **резерв/заготовка**, не используемая текущим прод-рантаймом.
 
 ## Целевая архитектура (каноничная)
 
@@ -84,6 +106,18 @@ npm run start
 curl -f http://localhost:3000/health
 ```
 
+## SEO-чеклист для новых страниц
+
+- [ ] **Title**: добавить/обновить на странице через `Helmet` (или аналогично, где страница управляет `document.title`).
+- [ ] **Description**: добавить/обновить `<meta name="description">` на уровне конкретной страницы.
+- [ ] **Canonical**: задать корректный canonical URL на уровне страницы (через `Helmet` или явное обновление `<link rel="canonical">`).
+- [ ] **Базовые дефолты** (fallback для SPA): при необходимости править в `index.html`:
+  - `<title>`
+  - `<meta name="description">`
+  - `<link rel="icon" ...>`
+  - `<link rel="canonical" ...>`
+- [ ] Если когда-либо будет включен Next runtime (`server/app/*`) в production, синхронизировать те же базовые SEO-настройки в `server/app/layout.tsx` и обновить этот README.
+
 ## CI/CD и деплой-проверки
 
 - В CI добавлена проверка `npm run ci:build-verify`, которая после сборки сканирует JS/source map в `dist/assets` и фейлит пайплайн, если найден legacy endpoint `/api/request-audit`.
@@ -96,4 +130,3 @@ curl -f http://localhost:3000/health
 2. Перезагрузите страницу и откройте основной JS bundle (тип `script`, путь `assets/index-*.js`).
 3. Убедитесь, что в **Response/Preview/Source map** присутствует новый endpoint `/form-handler.php`.
 4. Убедитесь, что строка `/api/request-audit` отсутствует в загруженном bundle/source map.
-
