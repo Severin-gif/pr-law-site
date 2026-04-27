@@ -46,6 +46,30 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
         </p>
       </section>
 
+      {service.placeholders.seoSection ? (
+        <section className="mt-8 sm:mt-10">
+          <h2 className={sectionTitleClass}>{service.placeholders.seoSection.title}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">
+            {service.placeholders.seoSection.text}
+          </p>
+          {service.placeholders.seoSection.list?.length ? (
+            <ul className="mt-3 space-y-2 text-sm text-white/80 sm:text-base">
+              {service.placeholders.seoSection.list.map((item) => (
+                <li key={item} className="flex gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B08B57]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {service.placeholders.seoSection.conclusion ? (
+            <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">
+              {service.placeholders.seoSection.conclusion}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+
       <section className="mt-8 sm:mt-10">
         <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.situations}</h2>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
@@ -83,6 +107,20 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
         </ol>
       </section>
 
+      {service.placeholders.preFaqSeoSection ? (
+        <section className="mt-8 sm:mt-10">
+          <h2 className={sectionTitleClass}>{service.placeholders.preFaqSeoSection.title}</h2>
+          <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">
+            {service.placeholders.preFaqSeoSection.text}
+          </p>
+          {service.placeholders.preFaqSeoSection.conclusion ? (
+            <p className="mt-3 text-sm leading-relaxed text-white/75 sm:text-base">
+              {service.placeholders.preFaqSeoSection.conclusion}
+            </p>
+          ) : null}
+        </section>
+      ) : null}
+
       <section className="mt-8 sm:mt-10">
         <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.faq}</h2>
         <div className="mt-3 space-y-3">
@@ -104,7 +142,7 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
           href="/#contact"
           className="mt-5 inline-flex items-center justify-center rounded-xl bg-[#4B8BFF] px-5 py-3 text-sm font-medium text-white transition hover:brightness-110"
         >
-          Обсудить задачу
+          {service.placeholders.finalCtaButtonLabel ?? "Обсудить задачу"}
         </a>
       </section>
 
