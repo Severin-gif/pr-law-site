@@ -30,7 +30,7 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
   const relatedServices = SERVICES.filter((item) => item.id !== service.id).slice(0, 3);
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
+    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
       <section className="rounded-2xl border border-white/10 bg-white/5 p-5 sm:p-8">
         <p className="text-xs uppercase tracking-[0.2em] text-[#B08B57]">{service.placeholders.heroTag}</p>
         <h1 className="mt-3 text-3xl font-light tracking-tight sm:text-5xl">{service.h1}</h1>
@@ -53,12 +53,9 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
             {service.placeholders.seoSection.text}
           </p>
           {service.placeholders.seoSection.list?.length ? (
-            <ul className="mt-3 space-y-2 text-sm text-white/80 sm:text-base">
+            <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-white/80 sm:text-base">
               {service.placeholders.seoSection.list.map((item) => (
-                <li key={item} className="flex gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B08B57]" />
-                  <span>{item}</span>
-                </li>
+                <li key={item}>{item}</li>
               ))}
             </ul>
           ) : null}
@@ -83,9 +80,9 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
 
       <section className="mt-8 sm:mt-10">
         <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.included}</h2>
-        <ul className="mt-3 space-y-2 text-sm text-white/80 sm:text-base">
+        <ul className="mt-3 grid gap-x-6 gap-y-2 text-sm text-white/80 sm:grid-cols-2 sm:text-base">
           {service.placeholders.included.map((item) => (
-            <li key={item} className="flex gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+            <li key={item} className="flex gap-3 border-b border-white/10 py-2 last:border-b-0">
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#B08B57]" />
               <span>{item}</span>
             </li>
@@ -95,9 +92,9 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
 
       <section className="mt-8 sm:mt-10">
         <h2 className={sectionTitleClass}>{service.placeholders.sectionTitles.process}</h2>
-        <ol className="mt-3 space-y-3">
+        <ol className="mt-3">
           {service.placeholders.process.map((item, index) => (
-            <li key={item} className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+            <li key={item} className="flex items-start gap-3 border-b border-white/10 py-3 last:border-b-0">
               <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/20 text-xs text-white/70">
                 {index + 1}
               </span>
@@ -147,9 +144,9 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
       </section>
 
       {service.seoText && (
-        <section style={{ marginTop: "40px" }}>
+        <section className="mt-8 sm:mt-10">
           {service.seoText.split("\n\n").map((p, i) => (
-            <p key={i} style={{ marginBottom: "12px" }}>
+            <p key={i} className="mb-3 text-sm leading-relaxed text-white/75 sm:text-base">
               {p}
             </p>
           ))}
