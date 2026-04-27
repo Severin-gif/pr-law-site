@@ -1,8 +1,17 @@
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 export default function About() {
   return (
     <div className="min-h-screen bg-[#0B0D10] text-[#EDEAE2]">
+      <Helmet>
+        <title>О юристе | Опыт в спорах, обязательствах и защите бизнеса</title>
+        <meta
+          name="description"
+          content="Информация о частной юридической практике: судебные споры, договорные конфликты, госконтракты и защита бизнеса при финансовых и правовых рисках."
+        />
+      </Helmet>
+
       <main className="mx-auto max-w-3xl px-6 py-12">
         {/* Header */}
         <header>

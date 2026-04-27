@@ -1,9 +1,19 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 
 const Privacy: React.FC = () => {
   return (
-    <main className="mx-auto max-w-4xl px-4 py-16 text-white">
-      <h1 className="mb-6 text-2xl font-serif">Политика конфиденциальности</h1>
+    <>
+      <Helmet>
+        <title>Политика конфиденциальности | Обработка персональных данных</title>
+        <meta
+          name="description"
+          content="Правила обработки и защиты персональных данных на сайте юриста: состав собираемых сведений, цели использования, сроки хранения и права пользователя."
+        />
+      </Helmet>
+
+      <main className="mx-auto max-w-4xl px-4 py-16 text-white">
+        <h1 className="mb-6 text-2xl font-serif">Политика конфиденциальности</h1>
 
       <div className="space-y-8 text-sm text-white/80">
         <section className="space-y-3">
@@ -123,7 +133,8 @@ const Privacy: React.FC = () => {
           <p>9.2. Актуальная версия политики всегда доступна на сайте.</p>
         </section>
       </div>
-    </main>
+      </main>
+    </>
   );
 };
 
