@@ -106,7 +106,7 @@ const RequestReviewModal: React.FC<Props> = ({ open, onClose }) => {
                     Закрыть
                   </button>
                   <a
-                    href="#contact"
+                    href="/#contact"
                     onClick={closeAndReset}
                     className="inline-flex items-center justify-center rounded-xl border border-white/12 bg-white/5 px-5 py-3 text-sm font-medium text-white/90 transition hover:bg-white/10"
                   >
