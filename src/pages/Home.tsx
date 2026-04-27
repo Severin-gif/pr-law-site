@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 
 import Hero from "../components/layout/Hero";
 import AboutSection from "../components/sections/AboutSection";
@@ -11,25 +12,35 @@ import ContactSection from "../components/sections/ContactSection";
 
 const Home: React.FC = () => {
   return (
-    <main className="px-6 pb-16 sm:px-10 lg:px-16">
-      <div className="mx-auto max-w-6xl space-y-12 sm:space-y-16 lg:space-y-20">
-        <Hero />
+    <>
+      <Helmet>
+        <title>Юрист по арбитражным спорам и банкротству | Частная практика</title>
+        <meta
+          name="description"
+          content="Частный юрист по арбитражным спорам, банкротству, договорам и защите активов бизнеса. Анализ рисков, стратегия и сопровождение до результата."
+        />
+      </Helmet>
 
-        {/* смысловой блок — коротко, без “умничания” */}
-        <AboutSection />
+      <main className="px-6 pb-16 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-6xl space-y-12 sm:space-y-16 lg:space-y-20">
+          <Hero />
 
-        <ServicesSection />
-        <InterludeSection />
+          {/* смысловой блок — коротко, без “умничания” */}
+          <AboutSection />
 
-        <TrustSection />
-        <EcosystemSection />
+          <ServicesSection />
+          <InterludeSection />
 
-        {/* короткий FAQ (3–4 вопроса) */}
-        <FAQSection />
+          <TrustSection />
+          <EcosystemSection />
 
-        <ContactSection />
-      </div>
-    </main>
+          {/* короткий FAQ (3–4 вопроса) */}
+          <FAQSection />
+
+          <ContactSection />
+        </div>
+      </main>
+    </>
   );
 };
 

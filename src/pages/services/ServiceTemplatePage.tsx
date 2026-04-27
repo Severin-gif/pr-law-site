@@ -17,6 +17,10 @@ const ServiceTemplatePage = ({ service }: ServiceTemplatePageProps) => {
       return;
     }
 
+    if (!isDescriptionLengthValid(service.description)) {
+      throw new Error(`Invalid service.description length for "${service.id}"`);
+    }
+
     document.title = service.title;
 
     const descriptionTag = upsertMetaTag("name", "description");
@@ -186,6 +190,11 @@ const upsertMetaTag = (attrName: "name" | "property", attrValue: string): HTMLMe
   document.head.appendChild(tag);
 
   return tag;
+};
+
+const isDescriptionLengthValid = (description: string): boolean => {
+  const length = description.trim().length;
+  return length >= 120 && length <= 160;
 };
 
 export default ServiceTemplatePage;

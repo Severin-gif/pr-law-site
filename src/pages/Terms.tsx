@@ -1,9 +1,19 @@
 import React from "react";
+import { Helmet } from "react-helmet-async";
 
 const Terms: React.FC = () => {
   return (
-    <main className="mx-auto max-w-4xl px-4 py-16 text-white">
-      <h1 className="mb-6 text-2xl font-serif">Правила пользования сайтом</h1>
+    <>
+      <Helmet>
+        <title>Правила пользования сайтом | Условия и ограничения</title>
+        <meta
+          name="description"
+          content="Условия использования сайта юриста: статус размещенной информации, порядок связи через формы, рамки ответственности и фиксация услуг в письменном соглашении."
+        />
+      </Helmet>
+
+      <main className="mx-auto max-w-4xl px-4 py-16 text-white">
+        <h1 className="mb-6 text-2xl font-serif">Правила пользования сайтом</h1>
 
       <div className="space-y-4 text-sm text-white/80">
         <p>
@@ -26,7 +36,8 @@ const Terms: React.FC = () => {
           совершённые на основании размещённой информации без консультации.
         </p>
       </div>
-    </main>
+      </main>
+    </>
   );
 };
 

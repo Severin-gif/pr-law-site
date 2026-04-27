@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { requestAudit, type RequestAuditPayload } from "../config/requestAudit";
 
 type PartnerType = "Бухгалтер" | "Арбитражный управляющий" | "Оценщик" | "Аудитор";
@@ -115,6 +116,14 @@ export default function PartnersPage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
+      <Helmet>
+        <title>Партнёрам | Взаимодействие с бухгалтерами, аудиторами и АУ</title>
+        <meta
+          name="description"
+          content="Формат взаимодействия с бухгалтерами, аудиторами, оценщиками и арбитражными управляющими: передача юридических рисков клиентов и согласование стратегии."
+        />
+      </Helmet>
+
       <div className="mx-auto max-w-5xl px-4 py-10">
         <header className="border-b border-white/10 pb-6">
           <h1 className="text-3xl font-semibold tracking-tight">Партнёрам</h1>

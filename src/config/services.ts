@@ -203,7 +203,7 @@ export const SERVICES: ServiceItem[] = [
     path: "/services/corporate",
     title: "Корпоративные вопросы — сопровождение изменений и решений",
     description:
-      "Правовая поддержка по корпоративному управлению, сделкам с долями и внутренним конфликтам участников.",
+      "Юридическое сопровождение корпоративного управления, сделок с долями и разрешения конфликтов участников с учетом процедур, рисков и судебной перспективы.",
     h1: "Корпоративные вопросы",
     icon: "briefcase",
     placeholders: {
@@ -254,7 +254,7 @@ export const SERVICES: ServiceItem[] = [
     path: "/services/asset-protection",
     title: "Защита активов — правовые меры по снижению имущественных рисков",
     description:
-      "Комплекс правовых мер для сохранности активов: аудит рисков, документирование, претензионная и судебная защита.",
+      "Правовая защита активов бизнеса: аудит имущественных рисков, настройка превентивных мер, претензионная работа и сопровождение споров при угрозе потерь.",
     h1: "Защита активов",
     icon: "shield",
     placeholders: {
@@ -300,3 +300,21 @@ export const SERVICES: ServiceItem[] = [
 export const getServiceBySlug = (
   slug: string
 ): ServiceItem | undefined => SERVICES.find((service) => service.slug === slug);
+
+const DESCRIPTION_MIN_LENGTH = 120;
+const DESCRIPTION_MAX_LENGTH = 160;
+
+const invalidServices = SERVICES.filter(({ description }) => {
+  const length = description.trim().length;
+  return length < DESCRIPTION_MIN_LENGTH || length > DESCRIPTION_MAX_LENGTH;
+});
+
+if (invalidServices.length > 0) {
+  const details = invalidServices
+    .map(({ id, description }) => `${id}: ${description.trim().length}`)
+    .join(", ");
+
+  throw new Error(
+    `Service description must be ${DESCRIPTION_MIN_LENGTH}-${DESCRIPTION_MAX_LENGTH} chars. Invalid: ${details}`
+  );
+}

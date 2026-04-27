@@ -1,7 +1,18 @@
+import { Helmet } from "react-helmet-async";
+
 export default function ProBono() {
   return (
-    <section className="w-full bg-neutral-950 text-neutral-100">
-      <div className="max-w-3xl mx-auto px-6 py-16">
+    <>
+      <Helmet>
+        <title>Pro Bono | Безвозмездная юридическая помощь по значимым делам</title>
+        <meta
+          name="description"
+          content="Раздел Pro Bono о безвозмездной юридической помощи в делах общественной и системной значимости: критерии отбора обращений и порядок подачи запроса."
+        />
+      </Helmet>
+
+      <section className="w-full bg-neutral-950 text-neutral-100">
+        <div className="max-w-3xl mx-auto px-6 py-16">
         <h1 className="text-4xl font-semibold mb-8 tracking-tight">
           Pro Bono
         </h1>
@@ -56,7 +67,8 @@ export default function ProBono() {
         <p className="mt-3 text-neutral-400">
           В случае соответствия вам будет направлен ответ для дальнейшего взаимодействия.
         </p>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 }
