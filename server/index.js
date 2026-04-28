@@ -51,14 +51,21 @@ const MIN_NAME_LEN = 2;
 const MIN_CONTACT_LEN = 5;
 const MIN_SUBMIT_DELAY_MS = 1200;
 const LEAD_ALLOWED_FIELDS = new Set(["name", "contact", "message", "consent", "hp", "ts"]);
-
-
-app.get("*", (req, res) => {
-  if (!indexExists) {
-    return res.status(200).send("OK");
-  }
-  res.sendFile(path.join(DIST_PATH, "index.html"));
-});
+const KNOWN_CLIENT_ROUTES = new Set([
+  "/",
+  "/about",
+  "/privacy",
+  "/terms",
+  "/partners",
+  "/pro-bono",
+  "/success",
+]);
+const KNOWN_SERVICE_SLUGS = new Set([
+  "arbitration-bankruptcy",
+  "contract-work",
+  "corporate",
+  "asset-protection",
+]);
 
 app.get("/health", (req, res) => {
   res.status(200).json({ ok: true });
@@ -87,16 +94,6 @@ app.use((req, res, next) => {
   });
 
   return next();
-});
-
-// 1. САМЫЙ ПЕРВЫЙ
-app.get("/", (req, res) => {
-  return res.status(200).type("text").send("OK");
-});
-
-// 2. health
-app.get("/health", (req, res) => {
-  return res.status(200).json({ ok: true });
 });
 
 function cleanRequiredEnv(name) {
@@ -342,7 +339,15 @@ app.use((req, res) => {
   if (!fs.existsSync(indexPath)) {
     return res.status(500).type("text").send("dist/index.html not found (run build)");
   }
-  return res.sendFile(indexPath, {
+
+  const pathname = req.path.replace(/\/+$/, "") || "/";
+  const hasFileExtension = /\.[a-z0-9]+$/i.test(pathname);
+  const isKnownServiceRoute =
+    pathname.startsWith("/services/") && KNOWN_SERVICE_SLUGS.has(pathname.slice("/services/".length));
+  const isKnownClientRoute = KNOWN_CLIENT_ROUTES.has(pathname) || isKnownServiceRoute;
+  const statusCode = hasFileExtension || !isKnownClientRoute ? 404 : 200;
+
+  return res.status(statusCode).sendFile(indexPath, {
     headers: {
       "Cache-Control": "no-cache, no-store, must-revalidate",
       Pragma: "no-cache",

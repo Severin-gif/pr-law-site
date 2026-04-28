@@ -15,6 +15,7 @@ import ProBono from "./pages/ProBono";
 import PartnersPage from "./components/partners";
 import Success from "./pages/Success";
 import ServiceTemplatePage from "./pages/services/ServiceTemplatePage";
+import NotFound from "./pages/NotFound";
 
 
 
@@ -40,7 +41,7 @@ const App = () => {
               element={<ServiceTemplatePage service={service} />}
             />
           ))}
-
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 
