@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { publicUrl } from "../../utils/publicUrl";
 
 type QA = { q: string; a: string };
@@ -23,8 +22,6 @@ const items: QA[] = [
 ];
 
 export default function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
   return (
     <section
       id="faq"
@@ -50,38 +47,18 @@ export default function FAQSection() {
         {/* локальная подложка под текстом — БЕЗ рамок */}
         <div className="mt-10 max-w-3xl rounded-2xl bg-black/35 px-6 py-8 backdrop-blur-[2px] sm:px-8 sm:py-10">
           <div className="space-y-6">
-            {items.map((it, idx) => {
-              const isOpen = openIndex === idx;
+            {items.map((it) => (
+              <div key={it.q}>
+                <p className="text-[17px] font-medium text-[#F2EFEA] sm:text-lg">{it.q}</p>
 
-              return (
-                <div key={it.q}>
-                  <button
-                    type="button"
-                    onClick={() => setOpenIndex(isOpen ? null : idx)}
-                    className="flex w-full items-start justify-between gap-6 text-left"
-                    aria-expanded={isOpen}
-                  >
-                    <span className="text-[17px] font-medium text-[#F2EFEA] sm:text-lg">
-                      {it.q}
-                    </span>
+                <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#CFCAC2] sm:text-base">
+                  {it.a}
+                </p>
 
-                    {/* минимальный индикатор без рамок */}
-                    <span className="mt-1 text-[#CFCAC2]/70">
-                      {isOpen ? "—" : "+"}
-                    </span>
-                  </button>
-
-                  {isOpen && (
-                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#CFCAC2] sm:text-base">
-                      {it.a}
-                    </p>
-                  )}
-
-                  {/* тонкий разделитель */}
-                  <div className="mt-6 h-px w-full bg-white/10" />
-                </div>
-              );
-            })}
+                {/* тонкий разделитель */}
+                <div className="mt-6 h-px w-full bg-white/10" />
+              </div>
+            ))}
           </div>
 
           <p className="mt-10 max-w-xl text-xs text-[#CFCAC2]/70">
