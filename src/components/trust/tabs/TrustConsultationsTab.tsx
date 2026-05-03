@@ -1,5 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { publicUrl } from "../../../utils/publicUrl";
+import { courtProspectsConsultation } from "../consultations/courtProspects";
+
+type ConsultationSection = {
+  title: string;
+  paragraphs?: string[];
+  items?: string[];
+};
+
+type ConsultationContent = {
+  title: string;
+  description: string;
+  sections: ConsultationSection[];
+};
 
 type ConsultationItem = {
   id: string;
@@ -9,6 +22,7 @@ type ConsultationItem = {
   bullets: string[];
   previewImage: string; // одно изображение
   pdf?: string; // опционально
+  content?: ConsultationContent;
 };
 
 const CONSULTATIONS: ConsultationItem[] = [
@@ -26,6 +40,7 @@ const CONSULTATIONS: ConsultationItem[] = [
     ],
     previewImage: publicUrl("compr1.jpg"),
     pdf: publicUrl("arbitr-pra.pdf"),
+    content: courtProspectsConsultation,
   },
   {
     id: "consultation-02",
@@ -215,34 +230,80 @@ function ConsultationModal({
 
             {/* right */}
             <div className="lg:col-span-8 min-h-0">
-              <div className="flex items-center justify-between">
-                <div className="text-xs text-white/55">Превью (нажмите, чтобы увеличить)</div>
+              <div className="max-h-[58vh] lg:max-h-[60vh] overflow-auto pr-1">
+                {item.content ? (
+                  <div className="space-y-5">
+                    <div>
+                      <div className="text-lg font-semibold text-white">{item.content.title}</div>
+                      <p className="mt-2 text-sm text-white/75 leading-relaxed">{item.content.description}</p>
+                    </div>
+
+                    {item.content.sections.map((section) => (
+                      <section key={section.title} className="space-y-2">
+                        <h4 className="text-sm font-semibold text-white/90">{section.title}</h4>
+
+                        {section.paragraphs?.map((paragraph) => (
+                          <p key={paragraph} className="text-sm text-white/75 leading-relaxed">
+                            {paragraph}
+                          </p>
+                        ))}
+
+                        {section.items && section.items.length > 0 && (
+                          <ul className="space-y-1.5 text-sm text-white/75">
+                            {section.items.map((listItem) => (
+                              <li key={listItem} className="flex gap-3">
+                                <span className="mt-2 h-1 w-1 rounded-full bg-white/40" />
+                                <span className="leading-relaxed">{listItem}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </section>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs text-white/55">Превью (нажмите, чтобы увеличить)</div>
+
+                    <button
+                      type="button"
+                      onClick={() => setZoom(true)}
+                      className="text-xs text-white/60 hover:text-white transition"
+                    >
+                      Увеличить →
+                    </button>
+                  </div>
+                )}
+
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="text-xs text-white/55">Превью (дополнительно)</div>
+
+                  <button
+                    type="button"
+                    onClick={() => setZoom(true)}
+                    className="text-xs text-white/60 hover:text-white transition"
+                  >
+                    Увеличить →
+                  </button>
+                </div>
 
                 <button
                   type="button"
                   onClick={() => setZoom(true)}
-                  className="text-xs text-white/60 hover:text-white transition"
+                  className="mt-3 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20"
+                  aria-label="Открыть увеличенное превью"
                 >
-                  Увеличить →
+                  {/* фиксируем фрейм: стабильно на 100% масштабе */}
+                  <div className="relative w-full aspect-[4/3] max-h-[60vh]">
+                    <img
+                      src={item.previewImage}
+                      alt={`${item.title} — превью`}
+                      className="absolute inset-0 h-full w-full object-contain"
+                      loading="lazy"
+                    />
+                  </div>
                 </button>
               </div>
-
-              <button
-                type="button"
-                onClick={() => setZoom(true)}
-                className="mt-3 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20"
-                aria-label="Открыть увеличенное превью"
-              >
-                {/* фиксируем фрейм: стабильно на 100% масштабе */}
-                <div className="relative w-full aspect-[4/3] max-h-[60vh]">
-                  <img
-                    src={item.previewImage}
-                    alt={`${item.title} — превью`}
-                    className="absolute inset-0 h-full w-full object-contain"
-                    loading="lazy"
-                  />
-                </div>
-              </button>
             </div>
           </div>
         </div>
