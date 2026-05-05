@@ -32,7 +32,7 @@ const CONSULTATIONS: ConsultationItem[] = [
       "что делать / чего не делать",
     ],
     previewImage: publicUrl("compr1.jpg"),
-    pdf: publicUrl("arbitr-pra.pdf"),
+    pdf: publicUrl("docs/Письменная консультация, оценка судебных перспектив.pdf"),
     content: courtProspectsConsultation,
   },
   {
@@ -296,34 +296,38 @@ function ConsultationModal({
                   </div>
                 )}
 
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="text-xs text-white/55">Превью (дополнительно)</div>
+                {item.id !== "consultation-01" && (
+                  <>
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="text-xs text-white/55">Превью (дополнительно)</div>
 
-                  <button
-                    type="button"
-                    onClick={() => setZoom(true)}
-                    className="text-xs text-white/60 hover:text-white transition"
-                  >
-                    Увеличить →
-                  </button>
-                </div>
+                      <button
+                        type="button"
+                        onClick={() => setZoom(true)}
+                        className="text-xs text-white/60 hover:text-white transition"
+                      >
+                        Увеличить →
+                      </button>
+                    </div>
 
-                <button
-                  type="button"
-                  onClick={() => setZoom(true)}
-                  className="mt-3 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20"
-                  aria-label="Открыть увеличенное превью"
-                >
-                  {/* фиксируем фрейм: стабильно на 100% масштабе */}
-                  <div className="relative w-full aspect-[4/3] max-h-[60vh]">
-                    <img
-                      src={item.previewImage}
-                      alt={`${item.title} — превью`}
-                      className="absolute inset-0 h-full w-full object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoom(true)}
+                      className="mt-3 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20"
+                      aria-label="Открыть увеличенное превью"
+                    >
+                      {/* фиксируем фрейм: стабильно на 100% масштабе */}
+                      <div className="relative w-full aspect-[4/3] max-h-[60vh]">
+                        <img
+                          src={item.previewImage}
+                          alt={`${item.title} — превью`}
+                          className="absolute inset-0 h-full w-full object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
