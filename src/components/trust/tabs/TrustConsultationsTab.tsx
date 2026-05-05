@@ -2,16 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { publicUrl } from "../../../utils/publicUrl";
 import { courtProspectsConsultation } from "../consultations/courtProspects";
 
-type ConsultationSection = {
-  title: string;
-  paragraphs?: string[];
-  items?: string[];
-};
-
 type ConsultationContent = {
   title: string;
   description: string;
-  sections: ConsultationSection[];
 };
 
 type ConsultationItem = {
@@ -39,7 +32,7 @@ const CONSULTATIONS: ConsultationItem[] = [
       "что делать / чего не делать",
     ],
     previewImage: publicUrl("compr1.jpg"),
-    pdf: publicUrl("arbitr-pra.pdf"),
+    pdf: publicUrl("docs/Письменная консультация, оценка судебных перспектив.pdf"),
     content: courtProspectsConsultation,
   },
   {
@@ -231,35 +224,63 @@ function ConsultationModal({
             {/* right */}
             <div className="lg:col-span-8 min-h-0">
               <div className="max-h-[58vh] lg:max-h-[60vh] overflow-auto pr-1">
-                {item.content ? (
-                  <div className="space-y-5">
+                {item.id === "consultation-01" ? (
+                  <div className="space-y-4 rounded-xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
                     <div>
-                      <div className="text-lg font-semibold text-white">{item.content.title}</div>
-                      <p className="mt-2 text-sm text-white/75 leading-relaxed">{item.content.description}</p>
+                      <h3 className="text-base sm:text-lg font-semibold text-white">Письменная консультация: оценка судебных перспектив</h3>
+                      <p className="mt-2 text-sm text-white/75 leading-relaxed">
+                        Когда спор уже возник и нужно понять: есть ли деньги в иске или нет.
+                      </p>
                     </div>
 
-                    {item.content.sections.map((section) => (
-                      <section key={section.title} className="space-y-2">
-                        <h4 className="text-sm font-semibold text-white/90">{section.title}</h4>
-
-                        {section.paragraphs?.map((paragraph) => (
-                          <p key={paragraph} className="text-sm text-white/75 leading-relaxed">
-                            {paragraph}
-                          </p>
+                    <section className="space-y-2">
+                      <h4 className="text-sm font-semibold text-white/90">Суть ситуации</h4>
+                      <ul className="space-y-1.5 text-sm text-white/75">
+                        {[
+                          "договор на 3 538 041 руб.",
+                          "работ выполнено более чем на 5 млн руб.",
+                          "акты и УПД не подписаны",
+                          "передача документально не подтверждена",
+                        ].map((point) => (
+                          <li key={point} className="flex gap-3">
+                            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-white/40" />
+                            <span className="leading-relaxed break-words">{point}</span>
+                          </li>
                         ))}
+                      </ul>
+                    </section>
 
-                        {section.items && section.items.length > 0 && (
-                          <ul className="space-y-1.5 text-sm text-white/75">
-                            {section.items.map((listItem) => (
-                              <li key={listItem} className="flex gap-3">
-                                <span className="mt-2 h-1 w-1 rounded-full bg-white/40" />
-                                <span className="leading-relaxed">{listItem}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </section>
-                    ))}
+                    <section className="space-y-2">
+                      <h4 className="text-sm font-semibold text-white/90">Ключевой вопрос</h4>
+                      <p className="text-sm text-white/75 leading-relaxed break-words">
+                        Можно ли доказать передачу результата работ или уклонение заказчика от приемки.
+                      </p>
+                    </section>
+
+                    <section className="space-y-2">
+                      <h4 className="text-sm font-semibold text-white/90">Риски</h4>
+                      <ul className="space-y-1.5 text-sm text-white/75">
+                        {[
+                          "нет актов → риск отказа",
+                          "нет ТТН/УПД → сложно доказать передачу",
+                          "допработы без согласования → не взыскиваются",
+                        ].map((risk) => (
+                          <li key={risk} className="flex gap-3">
+                            <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-white/40" />
+                            <span className="leading-relaxed break-words">{risk}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+
+                    <section className="space-y-2">
+                      <h4 className="text-sm font-semibold text-white/90">Вывод</h4>
+                      <p className="text-sm text-white/75 leading-relaxed break-words">
+                        По основному договору есть перспектива взыскания.
+                        <br />
+                        По дополнительным работам — слабая позиция без доказательств.
+                      </p>
+                    </section>
                   </div>
                 ) : (
                   <div className="flex items-center justify-between">
@@ -275,34 +296,38 @@ function ConsultationModal({
                   </div>
                 )}
 
-                <div className="mt-4 flex items-center justify-between">
-                  <div className="text-xs text-white/55">Превью (дополнительно)</div>
+                {item.id !== "consultation-01" && (
+                  <>
+                    <div className="mt-4 flex items-center justify-between">
+                      <div className="text-xs text-white/55">Превью (дополнительно)</div>
 
-                  <button
-                    type="button"
-                    onClick={() => setZoom(true)}
-                    className="text-xs text-white/60 hover:text-white transition"
-                  >
-                    Увеличить →
-                  </button>
-                </div>
+                      <button
+                        type="button"
+                        onClick={() => setZoom(true)}
+                        className="text-xs text-white/60 hover:text-white transition"
+                      >
+                        Увеличить →
+                      </button>
+                    </div>
 
-                <button
-                  type="button"
-                  onClick={() => setZoom(true)}
-                  className="mt-3 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20"
-                  aria-label="Открыть увеличенное превью"
-                >
-                  {/* фиксируем фрейм: стабильно на 100% масштабе */}
-                  <div className="relative w-full aspect-[4/3] max-h-[60vh]">
-                    <img
-                      src={item.previewImage}
-                      alt={`${item.title} — превью`}
-                      className="absolute inset-0 h-full w-full object-contain"
-                      loading="lazy"
-                    />
-                  </div>
-                </button>
+                    <button
+                      type="button"
+                      onClick={() => setZoom(true)}
+                      className="mt-3 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20"
+                      aria-label="Открыть увеличенное превью"
+                    >
+                      {/* фиксируем фрейм: стабильно на 100% масштабе */}
+                      <div className="relative w-full aspect-[4/3] max-h-[60vh]">
+                        <img
+                          src={item.previewImage}
+                          alt={`${item.title} — превью`}
+                          className="absolute inset-0 h-full w-full object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>
